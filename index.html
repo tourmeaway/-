@@ -25,10 +25,10 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 0 40px rgba(0,0,0,0.10);
-      position: relative;
       overflow: hidden;
     }
 
+    /* TOP BAR */
     .top-bar {
       background: #c8252a;
       padding: 8px 0 6px;
@@ -38,22 +38,38 @@
       flex-shrink: 0;
     }
     .lan { display: flex; flex-direction: column; align-items: center; }
-    .lt { width: 16px; height: 5px; background: #f5c842; border-radius: 3px 3px 0 0; }
-    .lb { width: 20px; height: 26px; background: #e8302a; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #f5c842; border: 1.5px solid #f5c842; }
-    .ll { width: 2px; height: 8px; background: #f5c842; }
-    .lk { width: 10px; height: 6px; background: #f5c842; border-radius: 0 0 5px 5px; }
+    .lt  { width: 16px; height: 5px; background: #f5c842; border-radius: 3px 3px 0 0; }
+    .lb  { width: 20px; height: 26px; background: #e8302a; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #f5c842; border: 1.5px solid #f5c842; }
+    .ll  { width: 2px; height: 8px; background: #f5c842; }
+    .lk  { width: 10px; height: 6px; background: #f5c842; border-radius: 0 0 5px 5px; }
 
     .hdr { text-align: center; padding: 8px 0 3px; flex-shrink: 0; }
     .hdr-t { color: #2d1446; font-size: 18px; font-weight: 700; letter-spacing: 2px; }
     .hdr-s { color: #c8252a; font-size: 11px; opacity: .65; letter-spacing: 1px; }
 
-    .screen { display: none; flex-direction: column; align-items: center; flex: 1; }
+    /* SCREENS — all fill remaining space */
+    .screen { display: none; flex-direction: column; align-items: center; flex: 1; min-height: 0; }
     .screen.on { display: flex; }
 
-    #s-intro { padding: 10px 18px 20px; justify-content: flex-start; }
-    .yl { width: 110px; height: 110px; object-fit: contain; margin: 6px 0 8px; }
+    /* ── INTRO — full height like game screen ── */
+    #s-intro {
+      padding: 0;
+      justify-content: flex-start;
+    }
+    .intro-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px 18px 20px;
+      flex: 1;
+      width: 100%;
+    }
+    .yl { width: 120px; height: 120px; object-fit: contain; margin: 8px 0 10px; }
 
-    .bub { background: #fdf8f0; border: 1.5px solid #f5c842; border-radius: 12px; padding: 13px 15px; width: 100%; position: relative; }
+    .bub {
+      background: #fdf8f0; border: 1.5px solid #f5c842;
+      border-radius: 12px; padding: 13px 15px; width: 100%; position: relative;
+    }
     .bub::before { content: ''; position: absolute; top: -10px; left: 36px; border: 5px solid transparent; border-bottom-color: #f5c842; }
     .bub::after  { content: ''; position: absolute; top: -8px;  left: 37px; border: 4.5px solid transparent; border-bottom-color: #fdf8f0; }
     .bub-t { font-size: 13px; color: #2d1446; line-height: 1.8; min-height: 36px; }
@@ -61,41 +77,103 @@
     .cur { display: inline-block; width: 2px; height: 13px; background: #2d1446; margin-left: 2px; vertical-align: middle; animation: bl .8s step-end infinite; }
     @keyframes bl { 50% { opacity: 0; } }
 
-    .btn { margin-top: 14px; background: #c8252a; color: #f5c842; border: 2px solid #f5c842; border-radius: 8px; padding: 11px 32px; font-size: 15px; font-weight: 700; letter-spacing: 1px; cursor: pointer; display: none; transition: transform .1s, background .15s; }
+    /* spacer pushes button to bottom in intro */
+    .intro-spacer { flex: 1; }
+
+    .btn {
+      background: #c8252a; color: #f5c842;
+      border: 2px solid #f5c842; border-radius: 8px; padding: 13px 36px;
+      font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer;
+      display: none; transition: transform .1s, background .15s;
+      margin-bottom: 8px;
+    }
     .btn:hover { background: #a01e22; }
     .btn:active { transform: scale(.97); }
     .btn.on { display: block; }
 
+    /* ── GAME ── */
     #s-game { padding: 0; justify-content: flex-start; }
 
-    .ctr-bar { display: flex; align-items: center; gap: 8px; border: 1px solid rgba(200,37,42,.2); border-radius: 20px; padding: 5px 14px; margin: 8px 16px 6px; background: rgba(200,37,42,.03); }
+    .ctr-bar {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(200,37,42,.2); border-radius: 20px;
+      padding: 5px 14px; margin: 8px 16px 6px;
+      background: rgba(200,37,42,.03); flex-shrink: 0;
+    }
     .ctr-lbl { color: #c8252a; font-size: 11px; letter-spacing: 1px; }
     .dots { display: flex; gap: 5px; }
     .dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid rgba(200,37,42,.3); background: transparent; transition: all .3s; }
     .dot.on { background: #c8252a; border-color: #c8252a; }
 
-    .throw-wrap { width: 100%; flex: 1; position: relative; background: #fdf8f0; border-top: 1px solid rgba(200,37,42,.1); border-bottom: 1px solid rgba(200,37,42,.1); min-height: 320px; overflow: hidden; touch-action: none; }
+    /* THROW AREA — takes all remaining space */
+    .throw-wrap {
+      width: 100%; flex: 1; min-height: 0;
+      position: relative;
+      background: #fdf8f0;
+      border-top: 1px solid rgba(200,37,42,.1);
+      border-bottom: 1px solid rgba(200,37,42,.1);
+      overflow: hidden;
+      touch-action: none;
+    }
     canvas#gc { display: block; width: 100%; height: 100%; }
 
-    .meter-wrap { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; opacity: 0; transition: opacity .2s; }
+    /* POWER METER */
+    .meter-wrap {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      pointer-events: none; opacity: 0; transition: opacity .2s;
+    }
     .meter-wrap.vis { opacity: 1; }
     .meter-pct { font-size: 14px; font-weight: 700; color: #c8252a; }
-    .meter-track { width: 24px; height: 180px; background: rgba(0,0,0,.07); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid rgba(200,37,42,.2); }
-    .meter-fill { position: absolute; bottom: 0; left: 0; right: 0; background: #4caf50; border-radius: 12px; transition: height .04s linear; }
+    .meter-track {
+      width: 24px; height: 180px;
+      background: rgba(0,0,0,.07); border-radius: 12px;
+      overflow: hidden; position: relative;
+      border: 1px solid rgba(200,37,42,.2);
+    }
+    .meter-fill {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: #4caf50; border-radius: 12px;
+      transition: height .04s linear;
+    }
     .meter-lbl { font-size: 10px; color: #c8252a; font-weight: 700; letter-spacing: .5px; }
 
-    .hold-btn { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); width: 88px; height: 88px; border-radius: 50%; background: #c8252a; border: 3px solid #f5c842; color: #f5c842; font-size: 12px; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; touch-action: none; user-select: none; box-shadow: 0 4px 16px rgba(200,37,42,.3); transition: transform .1s, background .1s; line-height: 1.3; }
+    /* HOLD BUTTON */
+    .hold-btn {
+      position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+      width: 88px; height: 88px; border-radius: 50%;
+      background: #c8252a; border: 3px solid #f5c842;
+      color: #f5c842; font-size: 12px; font-weight: 700; letter-spacing: .5px;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      cursor: pointer; touch-action: none; user-select: none;
+      box-shadow: 0 4px 16px rgba(200,37,42,.3);
+      transition: transform .1s, background .1s;
+      line-height: 1.3;
+    }
     .hold-btn.pressing { background: #8a1a1c; transform: translateX(-50%) scale(.91); }
 
-    .res-area { min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 0; flex-shrink: 0; }
+    /* RESULT */
+    .res-area {
+      min-height: 50px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 4px 0; flex-shrink: 0;
+    }
     .res-name { font-size: 24px; font-weight: 700; letter-spacing: 2px; }
     .res-desc { font-size: 11px; color: #888; margin-top: 2px; }
     .cs { color: #c8252a; } .cy { color: #4a90d9; } .cl { color: #b07030; }
 
-    .mini-row { display: flex; align-items: flex-end; gap: 10px; width: 100%; padding: 4px 14px 12px; flex-shrink: 0; }
+    /* MINI ROW */
+    .mini-row {
+      display: flex; align-items: flex-end; gap: 10px;
+      width: 100%; padding: 4px 14px 12px; flex-shrink: 0;
+    }
     .yl-sm { width: 52px; height: 52px; object-fit: contain; }
-    .mini-bub { flex: 1; background: #fdf8f0; border: 1px solid rgba(200,37,42,.18); border-radius: 10px; padding: 8px 12px; color: #5a3a3a; font-size: 12px; line-height: 1.65; min-height: 42px; }
+    .mini-bub {
+      flex: 1; background: #fdf8f0; border: 1px solid rgba(200,37,42,.18);
+      border-radius: 10px; padding: 8px 12px;
+      color: #5a3a3a; font-size: 12px; line-height: 1.65; min-height: 42px;
+    }
 
+    /* FAIL / SUCCESS */
     #s-fail, #s-success { padding: 24px 20px 20px; justify-content: center; }
     .yl-big { width: 88px; height: 88px; object-fit: contain; margin-bottom: 10px; }
     .fail-t { color: #4a90d9; font-size: 20px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
@@ -124,12 +202,17 @@
     <div class="hdr-s">Seek your destined match</div>
   </div>
 
+  <!-- INTRO — full height -->
   <div class="screen on" id="s-intro">
-    <img class="yl" src="yuelao.png" alt="Yue Lao">
-    <div class="bub"><div class="bub-t" id="spt"></div></div>
-    <button class="btn" id="bStart">Begin the Ritual</button>
+    <div class="intro-inner">
+      <img class="yl" src="yuelao.png" alt="Yue Lao">
+      <div class="bub"><div class="bub-t" id="spt"></div></div>
+      <div class="intro-spacer"></div>
+      <button class="btn" id="bStart">Begin the Ritual</button>
+    </div>
   </div>
 
+  <!-- GAME -->
   <div class="screen" id="s-game">
     <div class="ctr-bar">
       <span class="ctr-lbl">Holy Throws</span>
@@ -151,10 +234,11 @@
     <div class="res-area" id="resArea"></div>
     <div class="mini-row">
       <img class="yl-sm" src="yuelao.png" alt="">
-      <div class="mini-bub" id="miniBub">Hold your ideal person in mind. Press &amp; hold the button — charge up, then release to throw!</div>
+      <div class="mini-bub" id="miniBub">Hold your ideal person in mind. Press &amp; hold — charge up, release to throw!</div>
     </div>
   </div>
 
+  <!-- FAIL -->
   <div class="screen" id="s-fail">
     <img class="yl-big" src="yuelao.png" alt="">
     <div class="fail-t">Yin Jiao!</div>
@@ -162,12 +246,14 @@
     <button class="btn on" id="bRetry">Reconsider &amp; Try Again</button>
   </div>
 
+  <!-- SUCCESS -->
   <div class="screen" id="s-success">
     <div style="font-size:44px;margin-bottom:8px;">🧧</div>
     <div class="succ-t">Red Thread Tied!</div>
     <div class="succ-s">Yue Lao has heard your prayer</div>
     <svg width="260" height="48" viewBox="0 0 260 48" style="margin:6px 0;">
-      <path d="M8 24 Q65 4 130 24 Q195 44 252 24" stroke="#c8252a" stroke-width="2.5" fill="none" stroke-dasharray="260" stroke-dashoffset="260">
+      <path d="M8 24 Q65 4 130 24 Q195 44 252 24" stroke="#c8252a" stroke-width="2.5" fill="none"
+        stroke-dasharray="260" stroke-dashoffset="260">
         <animate attributeName="stroke-dashoffset" from="260" to="0" dur="1.2s" fill="freeze"/>
       </path>
       <circle cx="8" cy="24" r="4" fill="#c8252a"/>
@@ -182,6 +268,7 @@
 const imgBack  = new Image(); imgBack.src  = 'Back.png';
 const imgFront = new Image(); imgFront.src = 'Front.png';
 
+// ── TYPEWRITER ──
 const LINES = [
   "I am Yue Lao, keeper of the Red Thread.",
   "",
@@ -196,9 +283,9 @@ const LINES = [
   "and I will tie the red thread for you."
 ];
 let ci = 0, disp = '';
-const spt = document.getElementById('spt');
+const spt   = document.getElementById('spt');
 const bStart = document.getElementById('bStart');
-const full = LINES.join('\n');
+const full  = LINES.join('\n');
 
 function typeChar() {
   if (ci < full.length) {
@@ -217,6 +304,7 @@ function showS(id) {
   document.getElementById(id).classList.add('on');
 }
 
+// ── STATE ──
 let saintCount = 0, throwing = false;
 const NEED = 3;
 const FAILS = [
@@ -226,25 +314,29 @@ const FAILS = [
   "Too many conditions! Clear your mind\nand come back with an open heart.",
 ];
 const MINI = {
-  idle:  'Hold your ideal person in mind. Press & hold the button — charge up, then release to throw!',
+  idle:  'Hold your ideal person in mind. Press & hold — charge up, release to throw!',
   s1:    'One Holy Throw! Stay focused...',
   s2:    'Two in a row! One more — breathe and believe...',
   laugh: 'Laughing Throw! Yue Lao smiles — try again.',
   yin:   'Yin Jiao... your standards need a little adjusting.',
 };
 
+// ── CANVAS ──
 const wrap = document.getElementById('throwWrap');
 const gc   = document.getElementById('gc');
 const ctx  = gc.getContext('2d');
 let W, H;
 
 function resize() {
-  W = wrap.clientWidth; H = wrap.clientHeight;
-  gc.width = W; gc.height = H;
+  W = wrap.clientWidth;
+  H = wrap.clientHeight;
+  gc.width  = W;
+  gc.height = H;
 }
 resize();
 window.addEventListener('resize', resize);
 
+// ── DOTS ──
 function updateUI() {
   document.getElementById('sNum').textContent = saintCount;
   const d = document.getElementById('dots'); d.innerHTML = '';
@@ -256,13 +348,14 @@ function updateUI() {
 }
 updateUI();
 
+// ── POWER METER ──
 const meter   = document.getElementById('meter');
 const mFill   = document.getElementById('mFill');
 const mPct    = document.getElementById('mPct');
 const holdBtn = document.getElementById('holdBtn');
 
 let pressing = false, pressStart = 0, powerRaf = null;
-const MAX_HOLD = 2200;
+const MAX_HOLD = 1100; // half the original — faster charging
 
 function getPower() { return Math.min(1, (Date.now() - pressStart) / MAX_HOLD); }
 
@@ -306,99 +399,240 @@ holdBtn.addEventListener('touchstart', startPress, { passive: false });
 document.addEventListener('mouseup',   endPress);
 document.addEventListener('touchend',  endPress);
 
-function makePiece(x, y, vx, vy, spin, result, idx) {
-  return { x, y, vx, vy, spin, angle: (Math.random() - .5) * 1.4, result, idx, bounces: 0, landed: false, trail: [] };
+// ── PHYSICS WITH 3D + MOTION BLUR ──
+function makePiece(x, y, vx, vy, vz, spinX, spinY, spinZ, result, idx) {
+  return {
+    x, y,
+    z: -0.3,           // starts "behind" viewer (small = far)
+    vx, vy, vz,        // vz = depth velocity (positive = coming toward viewer)
+    spinX,             // tumble forward (3D flip angle around X axis)
+    spinY,             // spin around Y axis (shows front/back)
+    spinZ,             // in-plane rotation
+    angleX: Math.random() * Math.PI * 2,
+    angleY: Math.random() * Math.PI * 2,
+    angleZ: (Math.random() - .5) * 0.8,
+    result, idx,
+    bounces: 0,
+    landed: false,
+    trail: [],         // [{x, y, scl, angleZ, angleY}]
+    age: 0,
+  };
 }
 
 let pieces = [], rafId = null;
-const GRAV = 0.55, PW = 44, PH = 78;
+const GRAV = 0.52;
+const BASE_W = 42, BASE_H = 76;
 
-function landY(idx) { return H - 75 - idx * 24; }
+// perspective: scale based on z (z=0 → normal, z=1 → big, z=-1 → small)
+function zScale(z) { return 0.55 + z * 0.55; }
+function landY(idx) { return H - 72 - idx * 26; }
 
 function stepPieces() {
   let allLanded = pieces.length > 0;
   for (const p of pieces) {
     if (p.landed) continue;
     allLanded = false;
-    p.trail.push({ x: p.x, y: p.y, a: p.angle });
-    if (p.trail.length > 16) p.trail.shift();
-    p.vy += GRAV; p.x += p.vx; p.y += p.vy; p.angle += p.spin;
-    if (p.x < PW/2)     { p.x = PW/2;     p.vx =  Math.abs(p.vx) * .5; }
-    if (p.x > W - PW/2) { p.x = W - PW/2; p.vx = -Math.abs(p.vx) * .5; }
+    p.age++;
+
+    // save trail point
+    p.trail.push({ x: p.x, y: p.y, z: p.z, aZ: p.angleZ, aY: p.angleY });
+    if (p.trail.length > 20) p.trail.shift();
+
+    // update position
+    p.vy += GRAV;
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.z  += p.vz;
+
+    // update angles — fast tumbling creates blur illusion
+    p.angleX += p.spinX;
+    p.angleY += p.spinY;
+    p.angleZ += p.spinZ;
+
+    // z deceleration — piece arcs forward then slows
+    p.vz *= 0.97;
+
+    // clamp z so piece doesn't get too huge or disappear
+    if (p.z > 0.9) { p.z = 0.9; p.vz = 0; }
+    if (p.z < -0.5) p.z = -0.5;
+
+    // wall bounce
+    const scl = zScale(p.z);
+    const hw = BASE_W * scl / 2;
+    if (p.x < hw)     { p.x = hw;     p.vx =  Math.abs(p.vx) * .45; }
+    if (p.x > W - hw) { p.x = W - hw; p.vx = -Math.abs(p.vx) * .45; }
+
+    // floor
     const ly = landY(p.idx);
     if (p.y >= ly && p.vy > 0) {
       p.y = ly;
-      if (p.bounces < 3 && Math.abs(p.vy) > 1.2) {
-        p.vy = -p.vy * (0.32 - p.bounces * .08);
-        p.vx *= 0.6; p.spin *= 0.4; p.bounces++;
+      if (p.bounces < 3 && Math.abs(p.vy) > 1.5) {
+        p.vy    = -p.vy * (0.28 - p.bounces * .06);
+        p.vx   *= 0.55;
+        p.vz   *= 0.3;
+        p.spinX *= 0.35;
+        p.spinY *= 0.35;
+        p.spinZ *= 0.4;
+        p.bounces++;
       } else {
-        p.landed = true; p.vy = p.vx = p.spin = 0;
-        p.angle = Math.round(p.angle / Math.PI) * Math.PI;
-        p.trail = [];
+        p.landed = true;
+        p.vy = p.vx = p.vz = p.spinX = p.spinY = p.spinZ = 0;
+        // snap to flat orientation
+        p.angleZ = Math.round(p.angleZ / Math.PI) * Math.PI;
+        p.angleY = Math.round(p.angleY / Math.PI) * Math.PI; // settle to 0 or PI
+        p.trail  = [];
       }
     }
   }
   return allLanded;
 }
 
-function drawPiece(p) {
-  const useBack = p.result === 'saint' ? p.idx === 0 : p.result === 'yin' ? true : false;
-  const img = useBack ? imgBack : imgFront;
-  if (!p.landed && p.trail.length > 2) {
-    for (let i = 0; i < p.trail.length; i++) {
-      const t = p.trail[i];
-      ctx.save();
-      ctx.globalAlpha = (i / p.trail.length) * 0.15;
-      ctx.translate(t.x, t.y); ctx.rotate(t.a);
-      if (img.complete && img.naturalWidth > 0) ctx.drawImage(img, -PW*.4, -PH*.4, PW*.8, PH*.8);
-      ctx.restore();
-    }
+function drawJiaobei(p, alpha, x, y, scl, angleZ, angleY, isLanded) {
+  const useBack = p.result === 'saint' ? p.idx === 0
+                : p.result === 'yin'   ? true
+                : false;
+
+  // During flight, angleY determines which face shows — spins fast so it blurs
+  // When landed: snap to correct face
+  let showBack;
+  if (isLanded) {
+    showBack = useBack;
+  } else {
+    // use cos(angleY) to blend — negative cos = back face
+    showBack = Math.cos(angleY) >= 0 ? useBack : !useBack;
   }
+
+  const img = showBack ? imgBack : imgFront;
   if (!img.complete || img.naturalWidth === 0) return;
+
+  const w = BASE_W * scl;
+  const h = BASE_H * scl;
+
+  // cos(angleY) for horizontal squeeze — 3D perspective flip effect
+  const flipX = Math.abs(Math.cos(angleY));
+  // cos(angleX) for vertical squeeze — forward tumble
+  const flipY = isLanded ? 1 : (0.3 + 0.7 * Math.abs(Math.cos(p.angleX)));
+
   ctx.save();
-  ctx.globalAlpha = 1;
-  ctx.translate(p.x, p.y); ctx.rotate(p.angle);
-  if (p.landed) { ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 4; }
-  ctx.drawImage(img, -PW/2, -PH/2, PW, PH);
+  ctx.globalAlpha = alpha;
+  ctx.translate(x, y);
+  ctx.rotate(angleZ);
+  // apply perspective distortion
+  ctx.scale(flipX, flipY);
+  ctx.drawImage(img, -w / 2, -h / 2, w, h);
   ctx.restore();
 }
 
-function render() { ctx.clearRect(0,0,W,H); pieces.forEach(drawPiece); }
+function drawPiece(p) {
+  const scl = zScale(p.z);
+
+  if (!p.landed) {
+    // motion blur: draw trail with increasing blur opacity
+    // more trail steps = more blur
+    const tLen = p.trail.length;
+    for (let i = 0; i < tLen; i++) {
+      const t = p.trail[i];
+      const frac = i / tLen;
+      const tScl = zScale(t.z);
+      // layered blur: many transparent copies at slightly different angles
+      for (let b = 0; b < 3; b++) {
+        const blurAlpha = frac * 0.09 * (b === 0 ? 1 : 0.5);
+        const blurAngle = t.aZ + (b - 1) * 0.08;
+        drawJiaobei(p, blurAlpha, t.x, t.y, tScl * (0.85 + frac * 0.15), blurAngle, t.aY + b * 0.15, false);
+      }
+    }
+
+    // main piece — slightly transparent while flying so blur dominates
+    const mainAlpha = p.age < 8 ? 0.6 : 0.85;
+    drawJiaobei(p, mainAlpha, p.x, p.y, scl, p.angleZ, p.angleY, false);
+  } else {
+    // landed — crisp with shadow
+    ctx.save();
+    ctx.shadowColor   = 'rgba(0,0,0,0.22)';
+    ctx.shadowBlur    = 12;
+    ctx.shadowOffsetY = 5;
+    ctx.shadowOffsetX = 2;
+    ctx.restore();
+    drawJiaobei(p, 1, p.x, p.y, scl, p.angleZ, p.angleY, true);
+    // draw shadow separately
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.scale(1, 0.25);
+    const img2 = (p.result === 'saint' ? p.idx === 0 : p.result === 'yin') ? imgBack : imgFront;
+    if (img2.complete && img2.naturalWidth > 0) {
+      ctx.drawImage(img2, p.x - BASE_W * scl / 2, (p.y / 0.25) + BASE_H * scl * 0.45, BASE_W * scl, BASE_H * scl * 0.5);
+    }
+    ctx.restore();
+  }
+}
+
+function render() {
+  ctx.clearRect(0, 0, W, H);
+  // draw back-to-front by z
+  const sorted = [...pieces].sort((a, b) => a.z - b.z);
+  sorted.forEach(drawPiece);
+}
 
 function doThrow(power) {
   if (rafId) cancelAnimationFrame(rafId);
   throwing = true;
+
   const r = Math.random();
   let result;
   if      (power > .70) result = r < .55 ? 'saint' : r < .78 ? 'yin' : 'laugh';
   else if (power > .30) result = r < .42 ? 'saint' : r < .70 ? 'yin' : 'laugh';
   else                  result = r < .25 ? 'saint' : r < .62 ? 'yin' : 'laugh';
 
-  const cx = W / 2, speed = 5 + power * 15;
-  const vy0 = -(speed * 1.1 + Math.random() * 2);
-  const vxBase = (Math.random() - .5) * speed * .3;
+  const cx    = W / 2;
+  const speed = 5 + power * 15;
+  const vy0   = -(speed * 1.05 + Math.random() * 1.5);
+  const vxBase = (Math.random() - .5) * speed * .28;
+
+  // vz: positive = coming toward viewer (arcs forward)
+  const vz0 = 0.008 + power * 0.018;
+
+  // fast spin so blur hides face during flight
+  const spinSpeed = 0.18 + power * 0.12;
 
   pieces = [
-    makePiece(cx - 26 + (Math.random()-.5)*8, H+14, vxBase-(1+Math.random()*1.5), vy0*(.95+Math.random()*.1), (Math.random()-.5)*.22, result, 0),
-    makePiece(cx + 26 + (Math.random()-.5)*8, H+14, vxBase+(1+Math.random()*1.5), vy0*(.95+Math.random()*.1), (Math.random()-.5)*.25, result, 1),
+    makePiece(
+      cx - 28 + (Math.random() - .5) * 8, H + 14,
+      vxBase - (0.8 + Math.random() * 1.2), vy0 * (.96 + Math.random() * .08),
+      vz0 * (0.9 + Math.random() * .2),
+      (Math.random() - .5) * spinSpeed * 1.2,   // spinX (tumble)
+      spinSpeed * (Math.random() > .5 ? 1 : -1), // spinY (face flip — KEY for blur)
+      (Math.random() - .5) * 0.14,               // spinZ (in-plane)
+      result, 0
+    ),
+    makePiece(
+      cx + 28 + (Math.random() - .5) * 8, H + 14,
+      vxBase + (0.8 + Math.random() * 1.2), vy0 * (.96 + Math.random() * .08),
+      vz0 * (0.9 + Math.random() * .2),
+      (Math.random() - .5) * spinSpeed * 1.2,
+      spinSpeed * (Math.random() > .5 ? 1 : -1),
+      (Math.random() - .5) * 0.14,
+      result, 1
+    ),
   ];
 
   function loop() {
-    const done = stepPieces(); render();
+    const done = stepPieces();
+    render();
     if (done) { throwing = false; onResult(result); }
     else rafId = requestAnimationFrame(loop);
   }
   rafId = requestAnimationFrame(loop);
 }
 
+// ── RESULT ──
 const resArea = document.getElementById('resArea');
 const miniBub = document.getElementById('miniBub');
 
 function showResult(result) {
   const MAP = {
-    saint: { name:'Holy Throw!',    desc:'One flat, one curved — Yue Lao nods',    cls:'cs' },
-    yin:   { name:'Yin Jiao',       desc:'Both flat — your heart needs adjusting',  cls:'cy' },
-    laugh: { name:'Laughing Throw', desc:'Both curved — try again with focus',      cls:'cl' },
+    saint: { name: 'Holy Throw!',    desc: 'One flat, one curved — Yue Lao nods',   cls: 'cs' },
+    yin:   { name: 'Yin Jiao',       desc: 'Both flat — your heart needs adjusting', cls: 'cy' },
+    laugh: { name: 'Laughing Throw', desc: 'Both curved — try again with focus',     cls: 'cl' },
   };
   const m = MAP[result];
   resArea.innerHTML = `<div class="res-name fu ${m.cls}">${m.name}</div><div class="res-desc fu">${m.desc}</div>`;
@@ -409,7 +643,7 @@ function onResult(result) {
   if (result === 'saint') {
     saintCount++; updateUI();
     if (saintCount >= NEED) { setTimeout(goSuccess, 1100); return; }
-    miniBub.textContent = [MINI.s1, MINI.s2][saintCount-1] || 'Keep going!';
+    miniBub.textContent = [MINI.s1, MINI.s2][saintCount - 1] || 'Keep going!';
   } else if (result === 'yin') {
     miniBub.textContent = MINI.yin; setTimeout(goFail, 1500);
   } else {
@@ -418,26 +652,33 @@ function onResult(result) {
 }
 
 function goFail() {
-  document.getElementById('failMsg').textContent = FAILS[Math.floor(Math.random()*FAILS.length)];
+  document.getElementById('failMsg').textContent = FAILS[Math.floor(Math.random() * FAILS.length)];
   showS('s-fail');
 }
 function goSuccess() {
-  document.getElementById('succMsg').textContent = 'You cast 3 Holy Throws in a row.\nYue Lao has quietly tied a red thread\nbetween you and your destined one.\nThe timing is in the universe\'s hands.';
+  document.getElementById('succMsg').textContent =
+    'You cast 3 Holy Throws in a row.\nYue Lao has quietly tied a red thread\nbetween you and your destined one.\nThe timing is in the universe\'s hands.';
   showS('s-success');
 }
+
 function resetGame() {
   saintCount = 0; updateUI();
   if (rafId) cancelAnimationFrame(rafId);
   pieces = []; render();
-  resArea.innerHTML = ''; miniBub.textContent = MINI.idle;
+  resArea.innerHTML = '';
+  miniBub.textContent = MINI.idle;
   pressing = false; throwing = false;
   meter.classList.remove('vis');
   holdBtn.innerHTML = 'HOLD<br>to throw';
-  showS('s-game'); resize();
+  showS('s-game');
+  resize();
 }
 
 document.getElementById('bStart').addEventListener('click', resetGame);
-document.getElementById('bRetry').addEventListener('click', () => { miniBub.textContent = 'Take a breath. Open your heart. Try again...'; resetGame(); });
+document.getElementById('bRetry').addEventListener('click', () => {
+  miniBub.textContent = 'Take a breath. Open your heart. Try again...';
+  resetGame();
+});
 document.getElementById('bAgain').addEventListener('click', resetGame);
 </script>
 </body>
