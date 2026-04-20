@@ -18,10 +18,7 @@
       background: #fff; display: flex; flex-direction: column;
       box-shadow: 0 0 40px rgba(0,0,0,0.10); overflow: hidden;
     }
-    .top-bar {
-      width: 100%; background: #c8252a; padding: 8px 0 6px;
-      display: flex; justify-content: center; align-items: center; gap: 18px; flex-shrink: 0;
-    }
+    .top-bar { width: 100%; background: #c8252a; padding: 8px 0 6px; display: flex; justify-content: center; align-items: center; gap: 18px; flex-shrink: 0; }
     .lan { display: flex; flex-direction: column; align-items: center; }
     .lt  { width: 16px; height: 5px; background: #f5c842; border-radius: 3px 3px 0 0; }
     .lb  { width: 20px; height: 26px; background: #e8302a; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #f5c842; border: 1.5px solid #f5c842; font-weight: 600; }
@@ -154,7 +151,6 @@
 const imgBack  = new Image(); imgBack.src  = 'Back.png';
 const imgFront = new Image(); imgFront.src = 'Front.png';
 
-// ── TYPEWRITER ──
 const LINES = [
   "I am Yue Lao, God of Love.",
   "Taiwanese Tinder, if you will.",
@@ -206,7 +202,6 @@ const MINI = {
   yin:   'Yin Jiao... your standards need a little adjusting.',
 };
 
-// ── CANVAS ──
 const wrap = document.getElementById('throwWrap');
 const gc   = document.getElementById('gc');
 const ctx  = gc.getContext('2d');
@@ -229,7 +224,6 @@ function updateUI() {
 }
 updateUI();
 
-// ── POWER METER ──
 const meter   = document.getElementById('meter');
 const mFill   = document.getElementById('mFill');
 const mPct    = document.getElementById('mPct');
@@ -286,7 +280,6 @@ const GRAV = 0.52;
 function zScale(z) { return 0.55 + z * 0.55; }
 function landY(idx) { return H - 55 - idx * 28; }
 
-// Piece states: 'flying' | 'rocking' | 'settled'
 function makePiece(x, y, vx, vy, vz, spinX, spinY, spinZ, result, idx) {
   return {
     x, y, z: -0.2,
@@ -297,21 +290,23 @@ function makePiece(x, y, vx, vy, vz, spinX, spinY, spinZ, result, idx) {
     angleZ: (Math.random() - .5) * 0.8,
     result, idx,
     bounces: 0,
-    state: 'flying',  // 'flying' | 'rocking' | 'settled'
+    state: 'flying',
     trail: [],
     age: 0,
-    // rocking settle
-    rockAngle: 0,       // current rock angle (left-right tilt)
-    rockVel: 0,         // angular velocity of rock
-    rockImg: null,      // which face is up
-    landZ: 0,           // z frozen at landing
+    // set at landing moment
+    landZ: 0,
+    rockImg: null,
+    // rocking — uses a continuous visual angleZ that seamlessly continues from flying
+    rockAngle: 0,
+    rockVel: 0,
+    // the flipY at landing moment (how "flat" it already looks)
+    landFlipY: 1,
   };
 }
 
 let pieces = [], rafId = null;
 
 function getCorrectImg(p) {
-  // The face that should be UP (correct result face)
   const useBack = p.result === 'saint' ? p.idx === 0
                 : p.result === 'yin'   ? true : false;
   return useBack ? imgBack : imgFront;
@@ -324,6 +319,13 @@ function getFlyImg(p, angleY) {
   return (facingFront ? useBack : !useBack) ? imgBack : imgFront;
 }
 
+// Wrap angle to [-PI, PI]
+function wrapAngle(a) {
+  while (a >  Math.PI) a -= Math.PI * 2;
+  while (a < -Math.PI) a += Math.PI * 2;
+  return a;
+}
+
 function stepPieces() {
   let allDone = pieces.length > 0;
 
@@ -331,15 +333,12 @@ function stepPieces() {
     if (p.state === 'settled') continue;
 
     if (p.state === 'rocking') {
-      // Damped pendulum rocking toward 0 (flat, face up)
-      // Spring constant + damping
-      const spring = 0.045;
-      const damp   = 0.88;
-      p.rockVel += -spring * p.rockAngle;
-      p.rockVel *= damp;
+      // Damped spring toward 0
+      p.rockVel += -0.05 * p.rockAngle;
+      p.rockVel *= 0.85;
       p.rockAngle += p.rockVel;
 
-      if (Math.abs(p.rockAngle) < 0.003 && Math.abs(p.rockVel) < 0.003) {
+      if (Math.abs(p.rockAngle) < 0.002 && Math.abs(p.rockVel) < 0.002) {
         p.rockAngle = 0;
         p.rockVel   = 0;
         p.state     = 'settled';
@@ -358,7 +357,9 @@ function stepPieces() {
 
     p.vy += GRAV;
     p.x  += p.vx; p.y += p.vy; p.z += p.vz;
-    p.angleX += p.spinX; p.angleY += p.spinY; p.angleZ += p.spinZ;
+    p.angleX += p.spinX;
+    p.angleY += p.spinY;
+    p.angleZ += p.spinZ;
     p.vz *= 0.97;
 
     if (p.z > 0.9)  { p.z = 0.9;  p.vz = 0; }
@@ -378,20 +379,27 @@ function stepPieces() {
         p.spinX *= 0.3; p.spinY *= 0.3; p.spinZ *= 0.35;
         p.bounces++;
       } else {
-        // Transition to ROCKING
+        // ── TRANSITION TO ROCKING ──
         p.vy = p.vx = p.vz = p.spinX = p.spinY = p.spinZ = 0;
-        p.trail  = [];
-        p.landZ  = p.z;
-        p.state  = 'rocking';
+        p.trail = [];
+        p.landZ = p.z;
+        p.state = 'rocking';
         p.rockImg = getCorrectImg(p);
 
-        // Initial rock angle from whatever in-plane angle it had — clamped
-        // So it rocks from that angle toward flat
-        p.rockAngle = ((p.angleZ % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-        if (p.rockAngle > Math.PI) p.rockAngle -= Math.PI * 2;
-        // Clamp to ±0.6 rad so it's visible but not crazy
-        p.rockAngle = Math.max(-0.6, Math.min(0.6, p.rockAngle));
-        p.rockVel   = (Math.random() - 0.5) * 0.04; // tiny random start kick
+        // KEY FIX: use the VISUAL in-plane angle at this exact moment,
+        // wrapped to [-PI, PI] so it's a small readable tilt, not some
+        // huge accumulated value that causes a jump.
+        p.rockAngle = wrapAngle(p.angleZ);
+
+        // Clamp to a reasonable rocking range
+        p.rockAngle = Math.max(-0.5, Math.min(0.5, p.rockAngle));
+
+        // Inherit the in-plane spin as initial rock velocity (damped immediately)
+        p.rockVel = p.spinZ * 0.3;
+        p.rockVel = Math.max(-0.08, Math.min(0.08, p.rockVel));
+
+        // Capture flipY at this moment for smooth continuity
+        p.landFlipY = 0.3 + 0.7 * Math.abs(Math.cos(p.angleX));
       }
     }
   }
@@ -399,68 +407,64 @@ function stepPieces() {
   return allDone;
 }
 
-function drawSinglePiece(img, alpha, x, y, w, h, angleZ, flipX, flipY) {
+function drawSinglePiece(img, alpha, x, y, w, h, angleZ, scaleX, scaleY) {
   if (!img || !img.complete || img.naturalWidth === 0) return;
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.translate(x, y);
   ctx.rotate(angleZ);
-  ctx.scale(flipX, flipY);
+  ctx.scale(scaleX, scaleY);
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
   ctx.restore();
 }
 
 function drawPiece(p) {
-  const scl = zScale(p.state === 'rocking' || p.state === 'settled' ? p.landZ : p.z);
+  const scl = zScale(p.state === 'flying' ? p.z : p.landZ);
   const w = BASE_W * scl;
   const h = BASE_H * scl;
 
   if (p.state === 'rocking') {
-    // Draw correct face, rocking left-right via angleZ = rockAngle
-    // flipX/flipY = 1 (face-on, no perspective distortion — it's lying flat)
-    // Subtle Y squish to simulate lying flat on surface
-    const flattenY = 0.82 + 0.18 * Math.cos(p.rockAngle); // slightly flattened
+    // Correct face, rocking via rockAngle, Y slightly flattened to simulate lying down
+    // flipY: blend from landFlipY toward 0.82 (flat) as rocking damps out
+    const rockProgress = 1 - Math.min(1, Math.abs(p.rockAngle) / 0.5);
+    const flattenY = p.landFlipY + (0.82 - p.landFlipY) * rockProgress;
     drawSinglePiece(p.rockImg, 1, p.x, p.y, w, h, p.rockAngle, 1, flattenY);
     return;
   }
 
   if (p.state === 'settled') {
-    // Perfectly flat, face up, no tilt
-    const flattenY = 0.82;
-    drawSinglePiece(p.rockImg, 1, p.x, p.y, w, h, 0, 1, flattenY);
+    drawSinglePiece(p.rockImg, 1, p.x, p.y, w, h, 0, 1, 0.82);
     return;
   }
 
-  // ── FLYING ──
+  // ── FLYING with motion blur ──
   const tLen = p.trail.length;
   for (let i = 0; i < tLen; i++) {
     const t    = p.trail[i];
     const frac = i / tLen;
     const tScl = zScale(t.z);
-    const tw   = BASE_W * tScl;
-    const th   = BASE_H * tScl;
+    const tw = BASE_W * tScl, th = BASE_H * tScl;
     for (let b = 0; b < 4; b++) {
       const blurAlpha = frac * 0.10 * (1 - b * 0.18);
       if (blurAlpha <= 0) continue;
       const blurAY = t.aY + b * 0.12;
-      const img    = getFlyImg(p, blurAY);
-      const flipX  = Math.abs(Math.cos(blurAY));
-      const flipY  = 0.25 + 0.75 * Math.abs(Math.cos(t.aX));
-      drawSinglePiece(img, blurAlpha, t.x, t.y, tw, th, t.aZ + (b - 1.5) * 0.06, flipX, flipY);
+      const img = getFlyImg(p, blurAY);
+      const fx  = Math.abs(Math.cos(blurAY));
+      const fy  = 0.25 + 0.75 * Math.abs(Math.cos(t.aX));
+      drawSinglePiece(img, blurAlpha, t.x, t.y, tw, th, t.aZ + (b - 1.5) * 0.06, fx, fy);
     }
   }
 
-  const mainAlpha = p.age < 6 ? 0.55 : 0.82;
-  const flipX = Math.abs(Math.cos(p.angleY));
-  const flipY = 0.3 + 0.7 * Math.abs(Math.cos(p.angleX));
-  const img   = getFlyImg(p, p.angleY);
-  drawSinglePiece(img, mainAlpha, p.x, p.y, w, h, p.angleZ, flipX, flipY);
+  const alpha = p.age < 6 ? 0.55 : 0.82;
+  const fx  = Math.abs(Math.cos(p.angleY));
+  const fy  = 0.3 + 0.7 * Math.abs(Math.cos(p.angleX));
+  const img = getFlyImg(p, p.angleY);
+  drawSinglePiece(img, alpha, p.x, p.y, w, h, p.angleZ, fx, fy);
 }
 
 function render() {
   ctx.clearRect(0, 0, W, H);
-  const sorted = [...pieces].sort((a, b) => a.z - b.z);
-  sorted.forEach(drawPiece);
+  [...pieces].sort((a, b) => a.z - b.z).forEach(drawPiece);
 }
 
 function doThrow(power) {
@@ -482,37 +486,33 @@ function doThrow(power) {
 
   pieces = [
     makePiece(cx - 32 + (Math.random()-.5)*10, H+16,
-      vxBase - (0.8 + Math.random()*1.2), vy0*(.96+Math.random()*.08), vz0*(0.9+Math.random()*.2),
+      vxBase-(0.8+Math.random()*1.2), vy0*(.96+Math.random()*.08), vz0*(0.9+Math.random()*.2),
       (Math.random()-.5)*spin*1.1, spin*(Math.random()>.5?1:-1), (Math.random()-.5)*0.12,
       result, 0),
     makePiece(cx + 32 + (Math.random()-.5)*10, H+16,
-      vxBase + (0.8 + Math.random()*1.2), vy0*(.96+Math.random()*.08), vz0*(0.9+Math.random()*.2),
+      vxBase+(0.8+Math.random()*1.2), vy0*(.96+Math.random()*.08), vz0*(0.9+Math.random()*.2),
       (Math.random()-.5)*spin*1.1, spin*(Math.random()>.5?1:-1), (Math.random()-.5)*0.12,
       result, 1),
   ];
 
-  let allSettledReported = false;
+  let resultShown = false;
 
   function loop() {
     const allDone = stepPieces();
     render();
 
-    // Check if all pieces have at least landed (rocking or settled) — show result early
-    const allLanded = pieces.every(p => p.state !== 'flying');
-    if (allLanded && !allSettledReported) {
-      allSettledReported = true;
+    // Show result as soon as both pieces have left flying state
+    if (!resultShown && pieces.every(p => p.state !== 'flying')) {
+      resultShown = true;
       throwing = false;
       onResult(result);
     }
 
-    if (!allDone) {
-      rafId = requestAnimationFrame(loop);
-    }
+    if (!allDone) rafId = requestAnimationFrame(loop);
   }
   rafId = requestAnimationFrame(loop);
 }
 
-// ── RESULT ──
 const resArea = document.getElementById('resArea');
 const miniBub = document.getElementById('miniBub');
 
