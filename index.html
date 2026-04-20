@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Yue Lao — Red Thread Oracle</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
+      width: 100%;
       height: 100%;
       background: #f5f0e8;
       display: flex;
@@ -30,6 +31,7 @@
 
     /* TOP BAR */
     .top-bar {
+      width: 100%;
       background: #c8252a;
       padding: 8px 0 6px;
       display: flex;
@@ -43,32 +45,30 @@
     .ll  { width: 2px; height: 8px; background: #f5c842; }
     .lk  { width: 10px; height: 6px; background: #f5c842; border-radius: 0 0 5px 5px; }
 
-    .hdr { text-align: center; padding: 8px 0 3px; flex-shrink: 0; }
+    .hdr { width: 100%; text-align: center; padding: 8px 0 3px; flex-shrink: 0; }
     .hdr-t { color: #2d1446; font-size: 18px; font-weight: 700; letter-spacing: 2px; }
     .hdr-s { color: #c8252a; font-size: 11px; opacity: .65; letter-spacing: 1px; }
 
-    /* SCREENS — all fill remaining space */
-    .screen { display: none; flex-direction: column; align-items: center; flex: 1; min-height: 0; }
+    /* SCREENS */
+    .screen { display: none; flex-direction: column; align-items: center; flex: 1; width: 100%; min-height: 0; }
     .screen.on { display: flex; }
 
-    /* ── INTRO — full height like game screen ── */
-    #s-intro {
-      padding: 0;
-      justify-content: flex-start;
-    }
+    /* ── INTRO ── */
+    #s-intro { justify-content: flex-start; }
     .intro-inner {
+      width: 100%;
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 14px 18px 20px;
-      flex: 1;
-      width: 100%;
     }
     .yl { width: 120px; height: 120px; object-fit: contain; margin: 8px 0 10px; }
 
     .bub {
+      width: 100%;
       background: #fdf8f0; border: 1.5px solid #f5c842;
-      border-radius: 12px; padding: 13px 15px; width: 100%; position: relative;
+      border-radius: 12px; padding: 13px 15px; position: relative;
     }
     .bub::before { content: ''; position: absolute; top: -10px; left: 36px; border: 5px solid transparent; border-bottom-color: #f5c842; }
     .bub::after  { content: ''; position: absolute; top: -8px;  left: 37px; border: 4.5px solid transparent; border-bottom-color: #fdf8f0; }
@@ -77,15 +77,13 @@
     .cur { display: inline-block; width: 2px; height: 13px; background: #2d1446; margin-left: 2px; vertical-align: middle; animation: bl .8s step-end infinite; }
     @keyframes bl { 50% { opacity: 0; } }
 
-    /* spacer pushes button to bottom in intro */
-    .intro-spacer { flex: 1; }
+    .intro-spacer { flex: 1; min-height: 20px; }
 
     .btn {
       background: #c8252a; color: #f5c842;
       border: 2px solid #f5c842; border-radius: 8px; padding: 13px 36px;
       font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer;
       display: none; transition: transform .1s, background .15s;
-      margin-bottom: 8px;
     }
     .btn:hover { background: #a01e22; }
     .btn:active { transform: scale(.97); }
@@ -95,29 +93,32 @@
     #s-game { padding: 0; justify-content: flex-start; }
 
     .ctr-bar {
+      width: 100%;
       display: flex; align-items: center; gap: 8px;
       border: 1px solid rgba(200,37,42,.2); border-radius: 20px;
       padding: 5px 14px; margin: 8px 16px 6px;
       background: rgba(200,37,42,.03); flex-shrink: 0;
+      width: calc(100% - 32px);
     }
     .ctr-lbl { color: #c8252a; font-size: 11px; letter-spacing: 1px; }
     .dots { display: flex; gap: 5px; }
     .dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid rgba(200,37,42,.3); background: transparent; transition: all .3s; }
     .dot.on { background: #c8252a; border-color: #c8252a; }
 
-    /* THROW AREA — takes all remaining space */
+    /* THROW CANVAS — takes all remaining flex space */
     .throw-wrap {
-      width: 100%; flex: 1; min-height: 0;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
       position: relative;
       background: #fdf8f0;
       border-top: 1px solid rgba(200,37,42,.1);
-      border-bottom: 1px solid rgba(200,37,42,.1);
       overflow: hidden;
       touch-action: none;
     }
     canvas#gc { display: block; width: 100%; height: 100%; }
 
-    /* POWER METER */
+    /* POWER METER — inside canvas */
     .meter-wrap {
       position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -138,10 +139,19 @@
     }
     .meter-lbl { font-size: 10px; color: #c8252a; font-weight: 700; letter-spacing: .5px; }
 
-    /* HOLD BUTTON */
+    /* HOLD BUTTON — BELOW canvas, not overlapping */
+    .throw-btn-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 0 10px;
+      flex-shrink: 0;
+      background: #fff;
+      border-top: 1px solid rgba(200,37,42,.08);
+    }
     .hold-btn {
-      position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
-      width: 88px; height: 88px; border-radius: 50%;
+      width: 84px; height: 84px; border-radius: 50%;
       background: #c8252a; border: 3px solid #f5c842;
       color: #f5c842; font-size: 12px; font-weight: 700; letter-spacing: .5px;
       display: flex; align-items: center; justify-content: center; text-align: center;
@@ -149,28 +159,30 @@
       box-shadow: 0 4px 16px rgba(200,37,42,.3);
       transition: transform .1s, background .1s;
       line-height: 1.3;
+      -webkit-tap-highlight-color: transparent;
     }
-    .hold-btn.pressing { background: #8a1a1c; transform: translateX(-50%) scale(.91); }
+    .hold-btn.pressing { background: #8a1a1c; transform: scale(.91); }
 
     /* RESULT */
     .res-area {
-      min-height: 50px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; padding: 4px 0; flex-shrink: 0;
+      width: 100%;
+      min-height: 46px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 3px 0; flex-shrink: 0;
     }
-    .res-name { font-size: 24px; font-weight: 700; letter-spacing: 2px; }
-    .res-desc { font-size: 11px; color: #888; margin-top: 2px; }
+    .res-name { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+    .res-desc { font-size: 11px; color: #888; margin-top: 1px; }
     .cs { color: #c8252a; } .cy { color: #4a90d9; } .cl { color: #b07030; }
 
     /* MINI ROW */
     .mini-row {
       display: flex; align-items: flex-end; gap: 10px;
-      width: 100%; padding: 4px 14px 12px; flex-shrink: 0;
+      width: 100%; padding: 2px 14px 10px; flex-shrink: 0;
     }
-    .yl-sm { width: 52px; height: 52px; object-fit: contain; }
+    .yl-sm { width: 50px; height: 50px; object-fit: contain; }
     .mini-bub {
       flex: 1; background: #fdf8f0; border: 1px solid rgba(200,37,42,.18);
-      border-radius: 10px; padding: 8px 12px;
-      color: #5a3a3a; font-size: 12px; line-height: 1.65; min-height: 42px;
+      border-radius: 10px; padding: 7px 11px;
+      color: #5a3a3a; font-size: 11.5px; line-height: 1.6; min-height: 40px;
     }
 
     /* FAIL / SUCCESS */
@@ -202,7 +214,7 @@
     <div class="hdr-s">Seek your destined match</div>
   </div>
 
-  <!-- INTRO — full height -->
+  <!-- INTRO -->
   <div class="screen on" id="s-intro">
     <div class="intro-inner">
       <img class="yl" src="yuelao.png" alt="Yue Lao">
@@ -221,6 +233,7 @@
       <span style="font-size:11px;color:#aaa;">/ 3</span>
     </div>
 
+    <!-- canvas area — no button inside -->
     <div class="throw-wrap" id="throwWrap">
       <canvas id="gc"></canvas>
       <div class="meter-wrap" id="meter">
@@ -228,6 +241,10 @@
         <div class="meter-track"><div class="meter-fill" id="mFill" style="height:0%"></div></div>
         <div class="meter-lbl">POWER</div>
       </div>
+    </div>
+
+    <!-- button row BELOW canvas -->
+    <div class="throw-btn-row">
       <div class="hold-btn" id="holdBtn">HOLD<br>to throw</div>
     </div>
 
@@ -283,9 +300,9 @@ const LINES = [
   "and I will tie the red thread for you."
 ];
 let ci = 0, disp = '';
-const spt   = document.getElementById('spt');
+const spt    = document.getElementById('spt');
 const bStart = document.getElementById('bStart');
-const full  = LINES.join('\n');
+const full   = LINES.join('\n');
 
 function typeChar() {
   if (ci < full.length) {
@@ -355,7 +372,7 @@ const mPct    = document.getElementById('mPct');
 const holdBtn = document.getElementById('holdBtn');
 
 let pressing = false, pressStart = 0, powerRaf = null;
-const MAX_HOLD = 1100; // half the original — faster charging
+const MAX_HOLD = 1100;
 
 function getPower() { return Math.min(1, (Date.now() - pressStart) / MAX_HOLD); }
 
@@ -399,33 +416,31 @@ holdBtn.addEventListener('touchstart', startPress, { passive: false });
 document.addEventListener('mouseup',   endPress);
 document.addEventListener('touchend',  endPress);
 
-// ── PHYSICS WITH 3D + MOTION BLUR ──
+// ── PHYSICS ──
+// Larger piece size
+const BASE_W = 56, BASE_H = 100;
+
+function zScale(z) { return 0.55 + z * 0.55; }
+function landY(idx) { return H - 55 - idx * 28; }
+
 function makePiece(x, y, vx, vy, vz, spinX, spinY, spinZ, result, idx) {
   return {
-    x, y,
-    z: -0.3,           // starts "behind" viewer (small = far)
-    vx, vy, vz,        // vz = depth velocity (positive = coming toward viewer)
-    spinX,             // tumble forward (3D flip angle around X axis)
-    spinY,             // spin around Y axis (shows front/back)
-    spinZ,             // in-plane rotation
+    x, y, z: -0.2,
+    vx, vy, vz,
+    spinX, spinY, spinZ,
     angleX: Math.random() * Math.PI * 2,
     angleY: Math.random() * Math.PI * 2,
     angleZ: (Math.random() - .5) * 0.8,
     result, idx,
     bounces: 0,
     landed: false,
-    trail: [],         // [{x, y, scl, angleZ, angleY}]
+    trail: [],
     age: 0,
   };
 }
 
 let pieces = [], rafId = null;
 const GRAV = 0.52;
-const BASE_W = 42, BASE_H = 76;
-
-// perspective: scale based on z (z=0 → normal, z=1 → big, z=-1 → small)
-function zScale(z) { return 0.55 + z * 0.55; }
-function landY(idx) { return H - 72 - idx * 26; }
 
 function stepPieces() {
   let allLanded = pieces.length > 0;
@@ -434,141 +449,117 @@ function stepPieces() {
     allLanded = false;
     p.age++;
 
-    // save trail point
+    // save trail — only while airborne
     p.trail.push({ x: p.x, y: p.y, z: p.z, aZ: p.angleZ, aY: p.angleY });
-    if (p.trail.length > 20) p.trail.shift();
+    if (p.trail.length > 18) p.trail.shift();
 
-    // update position
     p.vy += GRAV;
-    p.x  += p.vx;
-    p.y  += p.vy;
-    p.z  += p.vz;
-
-    // update angles — fast tumbling creates blur illusion
+    p.x  += p.vx; p.y += p.vy; p.z += p.vz;
     p.angleX += p.spinX;
     p.angleY += p.spinY;
     p.angleZ += p.spinZ;
+    p.vz     *= 0.97;
 
-    // z deceleration — piece arcs forward then slows
-    p.vz *= 0.97;
+    if (p.z > 0.9)  { p.z = 0.9;  p.vz = 0; }
+    if (p.z < -0.5) { p.z = -0.5; }
 
-    // clamp z so piece doesn't get too huge or disappear
-    if (p.z > 0.9) { p.z = 0.9; p.vz = 0; }
-    if (p.z < -0.5) p.z = -0.5;
-
-    // wall bounce
     const scl = zScale(p.z);
-    const hw = BASE_W * scl / 2;
+    const hw  = BASE_W * scl / 2;
     if (p.x < hw)     { p.x = hw;     p.vx =  Math.abs(p.vx) * .45; }
     if (p.x > W - hw) { p.x = W - hw; p.vx = -Math.abs(p.vx) * .45; }
 
-    // floor
     const ly = landY(p.idx);
     if (p.y >= ly && p.vy > 0) {
       p.y = ly;
       if (p.bounces < 3 && Math.abs(p.vy) > 1.5) {
         p.vy    = -p.vy * (0.28 - p.bounces * .06);
-        p.vx   *= 0.55;
-        p.vz   *= 0.3;
-        p.spinX *= 0.35;
-        p.spinY *= 0.35;
-        p.spinZ *= 0.4;
+        p.vx   *= 0.55; p.vz *= 0.3;
+        p.spinX *= 0.3; p.spinY *= 0.3; p.spinZ *= 0.35;
         p.bounces++;
       } else {
+        // LANDED — clear all trail, stop all spin
         p.landed = true;
         p.vy = p.vx = p.vz = p.spinX = p.spinY = p.spinZ = 0;
-        // snap to flat orientation
         p.angleZ = Math.round(p.angleZ / Math.PI) * Math.PI;
-        p.angleY = Math.round(p.angleY / Math.PI) * Math.PI; // settle to 0 or PI
-        p.trail  = [];
+        p.angleY = 0; // snap: show correct face (angleY=0 means cos=1, front)
+        p.trail  = []; // clear trail so no residual blur
       }
     }
   }
   return allLanded;
 }
 
-function drawJiaobei(p, alpha, x, y, scl, angleZ, angleY, isLanded) {
-  const useBack = p.result === 'saint' ? p.idx === 0
-                : p.result === 'yin'   ? true
-                : false;
-
-  // During flight, angleY determines which face shows — spins fast so it blurs
-  // When landed: snap to correct face
-  let showBack;
-  if (isLanded) {
-    showBack = useBack;
-  } else {
-    // use cos(angleY) to blend — negative cos = back face
-    showBack = Math.cos(angleY) >= 0 ? useBack : !useBack;
-  }
-
-  const img = showBack ? imgBack : imgFront;
+function drawSinglePiece(img, alpha, x, y, w, h, angleZ, flipX, flipY) {
   if (!img.complete || img.naturalWidth === 0) return;
-
-  const w = BASE_W * scl;
-  const h = BASE_H * scl;
-
-  // cos(angleY) for horizontal squeeze — 3D perspective flip effect
-  const flipX = Math.abs(Math.cos(angleY));
-  // cos(angleX) for vertical squeeze — forward tumble
-  const flipY = isLanded ? 1 : (0.3 + 0.7 * Math.abs(Math.cos(p.angleX)));
-
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.translate(x, y);
   ctx.rotate(angleZ);
-  // apply perspective distortion
   ctx.scale(flipX, flipY);
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
   ctx.restore();
 }
 
+function getImg(p, angleY) {
+  const useBack = p.result === 'saint' ? p.idx === 0
+                : p.result === 'yin'   ? true
+                : false;
+  // which face is toward viewer based on angleY
+  const facingFront = Math.cos(angleY) >= 0;
+  return (facingFront ? useBack : !useBack) ? imgBack : imgFront;
+}
+
 function drawPiece(p) {
   const scl = zScale(p.z);
+  const w = BASE_W * scl;
+  const h = BASE_H * scl;
 
-  if (!p.landed) {
-    // motion blur: draw trail with increasing blur opacity
-    // more trail steps = more blur
-    const tLen = p.trail.length;
-    for (let i = 0; i < tLen; i++) {
-      const t = p.trail[i];
-      const frac = i / tLen;
-      const tScl = zScale(t.z);
-      // layered blur: many transparent copies at slightly different angles
-      for (let b = 0; b < 3; b++) {
-        const blurAlpha = frac * 0.09 * (b === 0 ? 1 : 0.5);
-        const blurAngle = t.aZ + (b - 1) * 0.08;
-        drawJiaobei(p, blurAlpha, t.x, t.y, tScl * (0.85 + frac * 0.15), blurAngle, t.aY + b * 0.15, false);
-      }
-    }
-
-    // main piece — slightly transparent while flying so blur dominates
-    const mainAlpha = p.age < 8 ? 0.6 : 0.85;
-    drawJiaobei(p, mainAlpha, p.x, p.y, scl, p.angleZ, p.angleY, false);
-  } else {
-    // landed — crisp with shadow
+  if (p.landed) {
+    // CLEAN — no effects, no trail, just the image
+    const useBack = p.result === 'saint' ? p.idx === 0
+                  : p.result === 'yin'   ? true
+                  : false;
+    const img = useBack ? imgBack : imgFront;
+    if (!img.complete || img.naturalWidth === 0) return;
     ctx.save();
-    ctx.shadowColor   = 'rgba(0,0,0,0.22)';
-    ctx.shadowBlur    = 12;
-    ctx.shadowOffsetY = 5;
-    ctx.shadowOffsetX = 2;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.angleZ);
+    ctx.drawImage(img, -w / 2, -h / 2, w, h);
     ctx.restore();
-    drawJiaobei(p, 1, p.x, p.y, scl, p.angleZ, p.angleY, true);
-    // draw shadow separately
-    ctx.save();
-    ctx.globalAlpha = 0.18;
-    ctx.scale(1, 0.25);
-    const img2 = (p.result === 'saint' ? p.idx === 0 : p.result === 'yin') ? imgBack : imgFront;
-    if (img2.complete && img2.naturalWidth > 0) {
-      ctx.drawImage(img2, p.x - BASE_W * scl / 2, (p.y / 0.25) + BASE_H * scl * 0.45, BASE_W * scl, BASE_H * scl * 0.5);
-    }
-    ctx.restore();
+    return;
   }
+
+  // ── FLYING: motion blur trail ──
+  const tLen = p.trail.length;
+  for (let i = 0; i < tLen; i++) {
+    const t    = p.trail[i];
+    const frac = i / tLen;
+    const tScl = zScale(t.z);
+    const tw   = BASE_W * tScl;
+    const th   = BASE_H * tScl;
+
+    // Multiple blur layers per trail point
+    for (let b = 0; b < 4; b++) {
+      const blurAlpha = frac * 0.10 * (1 - b * 0.18);
+      if (blurAlpha <= 0) continue;
+      const blurAY = t.aY + b * 0.12;
+      const img    = getImg(p, blurAY);
+      const flipX  = Math.abs(Math.cos(blurAY));
+      const flipY  = 0.25 + 0.75 * Math.abs(Math.cos(p.trail[i] ? p.angleX : p.angleX));
+      drawSinglePiece(img, blurAlpha, t.x, t.y, tw, th, t.aZ + (b - 1.5) * 0.06, flipX, flipY);
+    }
+  }
+
+  // Main airborne piece
+  const mainAlpha = p.age < 6 ? 0.55 : 0.82;
+  const flipX = Math.abs(Math.cos(p.angleY));
+  const flipY = 0.3 + 0.7 * Math.abs(Math.cos(p.angleX));
+  const img   = getImg(p, p.angleY);
+  drawSinglePiece(img, mainAlpha, p.x, p.y, w, h, p.angleZ, flipX, flipY);
 }
 
 function render() {
   ctx.clearRect(0, 0, W, H);
-  // draw back-to-front by z
   const sorted = [...pieces].sort((a, b) => a.z - b.z);
   sorted.forEach(drawPiece);
 }
@@ -583,34 +574,32 @@ function doThrow(power) {
   else if (power > .30) result = r < .42 ? 'saint' : r < .70 ? 'yin' : 'laugh';
   else                  result = r < .25 ? 'saint' : r < .62 ? 'yin' : 'laugh';
 
-  const cx    = W / 2;
-  const speed = 5 + power * 15;
-  const vy0   = -(speed * 1.05 + Math.random() * 1.5);
+  const cx     = W / 2;
+  const speed  = 5 + power * 15;
+  const vy0    = -(speed * 1.05 + Math.random() * 1.5);
   const vxBase = (Math.random() - .5) * speed * .28;
-
-  // vz: positive = coming toward viewer (arcs forward)
-  const vz0 = 0.008 + power * 0.018;
-
-  // fast spin so blur hides face during flight
-  const spinSpeed = 0.18 + power * 0.12;
+  const vz0    = 0.008 + power * 0.018;
+  const spin   = 0.20 + power * 0.12;
 
   pieces = [
     makePiece(
-      cx - 28 + (Math.random() - .5) * 8, H + 14,
-      vxBase - (0.8 + Math.random() * 1.2), vy0 * (.96 + Math.random() * .08),
+      cx - 32 + (Math.random() - .5) * 10, H + 16,
+      vxBase - (0.8 + Math.random() * 1.2),
+      vy0 * (.96 + Math.random() * .08),
       vz0 * (0.9 + Math.random() * .2),
-      (Math.random() - .5) * spinSpeed * 1.2,   // spinX (tumble)
-      spinSpeed * (Math.random() > .5 ? 1 : -1), // spinY (face flip — KEY for blur)
-      (Math.random() - .5) * 0.14,               // spinZ (in-plane)
+      (Math.random() - .5) * spin * 1.1,
+      spin * (Math.random() > .5 ? 1 : -1),
+      (Math.random() - .5) * 0.12,
       result, 0
     ),
     makePiece(
-      cx + 28 + (Math.random() - .5) * 8, H + 14,
-      vxBase + (0.8 + Math.random() * 1.2), vy0 * (.96 + Math.random() * .08),
+      cx + 32 + (Math.random() - .5) * 10, H + 16,
+      vxBase + (0.8 + Math.random() * 1.2),
+      vy0 * (.96 + Math.random() * .08),
       vz0 * (0.9 + Math.random() * .2),
-      (Math.random() - .5) * spinSpeed * 1.2,
-      spinSpeed * (Math.random() > .5 ? 1 : -1),
-      (Math.random() - .5) * 0.14,
+      (Math.random() - .5) * spin * 1.1,
+      spin * (Math.random() > .5 ? 1 : -1),
+      (Math.random() - .5) * 0.12,
       result, 1
     ),
   ];
