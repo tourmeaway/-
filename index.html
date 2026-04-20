@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Yue Lao — Red Thread Oracle</title>
+  <title>月老廟 — Red Thread Oracle</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -35,19 +35,20 @@
       background: #c8252a;
       padding: 8px 0 6px;
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
       align-items: center;
+      gap: 18px;
       flex-shrink: 0;
     }
     .lan { display: flex; flex-direction: column; align-items: center; }
     .lt  { width: 16px; height: 5px; background: #f5c842; border-radius: 3px 3px 0 0; }
-    .lb  { width: 20px; height: 26px; background: #e8302a; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #f5c842; border: 1.5px solid #f5c842; }
+    .lb  { width: 20px; height: 26px; background: #e8302a; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #f5c842; border: 1.5px solid #f5c842; font-weight: 600; }
     .ll  { width: 2px; height: 8px; background: #f5c842; }
     .lk  { width: 10px; height: 6px; background: #f5c842; border-radius: 0 0 5px 5px; }
 
     .hdr { width: 100%; text-align: center; padding: 8px 0 3px; flex-shrink: 0; }
     .hdr-t { color: #2d1446; font-size: 18px; font-weight: 700; letter-spacing: 2px; }
-    .hdr-s { color: #c8252a; font-size: 11px; opacity: .65; letter-spacing: 1px; }
+    .hdr-s { color: #c8252a; font-size: 11px; opacity: .7; letter-spacing: 1px; }
 
     /* SCREENS */
     .screen { display: none; flex-direction: column; align-items: center; flex: 1; width: 100%; min-height: 0; }
@@ -93,7 +94,6 @@
     #s-game { padding: 0; justify-content: flex-start; }
 
     .ctr-bar {
-      width: 100%;
       display: flex; align-items: center; gap: 8px;
       border: 1px solid rgba(200,37,42,.2); border-radius: 20px;
       padding: 5px 14px; margin: 8px 16px 6px;
@@ -105,11 +105,8 @@
     .dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid rgba(200,37,42,.3); background: transparent; transition: all .3s; }
     .dot.on { background: #c8252a; border-color: #c8252a; }
 
-    /* THROW CANVAS — takes all remaining flex space */
     .throw-wrap {
-      width: 100%;
-      flex: 1;
-      min-height: 0;
+      width: 100%; flex: 1; min-height: 0;
       position: relative;
       background: #fdf8f0;
       border-top: 1px solid rgba(200,37,42,.1);
@@ -118,7 +115,7 @@
     }
     canvas#gc { display: block; width: 100%; height: 100%; }
 
-    /* POWER METER — inside canvas */
+    /* POWER METER */
     .meter-wrap {
       position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -139,12 +136,10 @@
     }
     .meter-lbl { font-size: 10px; color: #c8252a; font-weight: 700; letter-spacing: .5px; }
 
-    /* HOLD BUTTON — BELOW canvas, not overlapping */
+    /* HOLD BUTTON — below canvas */
     .throw-btn-row {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: flex; justify-content: center; align-items: center;
       padding: 12px 0 10px;
       flex-shrink: 0;
       background: #fff;
@@ -163,17 +158,16 @@
     }
     .hold-btn.pressing { background: #8a1a1c; transform: scale(.91); }
 
-    /* RESULT */
     .res-area {
-      width: 100%;
-      min-height: 46px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; padding: 3px 0; flex-shrink: 0;
+      width: 100%; min-height: 46px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3px 0; flex-shrink: 0;
     }
     .res-name { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
     .res-desc { font-size: 11px; color: #888; margin-top: 1px; }
     .cs { color: #c8252a; } .cy { color: #4a90d9; } .cl { color: #b07030; }
 
-    /* MINI ROW */
     .mini-row {
       display: flex; align-items: flex-end; gap: 10px;
       width: 100%; padding: 2px 14px 10px; flex-shrink: 0;
@@ -185,7 +179,6 @@
       color: #5a3a3a; font-size: 11.5px; line-height: 1.6; min-height: 40px;
     }
 
-    /* FAIL / SUCCESS */
     #s-fail, #s-success { padding: 24px 20px 20px; justify-content: center; }
     .yl-big { width: 88px; height: 88px; object-fit: contain; margin-bottom: 10px; }
     .fail-t { color: #4a90d9; font-size: 20px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
@@ -201,17 +194,16 @@
 <body>
 <div id="app">
 
+  <!-- 4 lanterns: 月 老 廟 + decoration -->
   <div class="top-bar">
-    <div class="lan"><div class="lt"></div><div class="lb">緣</div><div class="ll"></div><div class="lk"></div></div>
     <div class="lan"><div class="lt"></div><div class="lb">月</div><div class="ll"></div><div class="lk"></div></div>
     <div class="lan"><div class="lt"></div><div class="lb">老</div><div class="ll"></div><div class="lk"></div></div>
     <div class="lan"><div class="lt"></div><div class="lb">廟</div><div class="ll"></div><div class="lk"></div></div>
-    <div class="lan"><div class="lt"></div><div class="lb">求</div><div class="ll"></div><div class="lk"></div></div>
   </div>
 
   <div class="hdr">
-    <div class="hdr-t">Yue Lao — Red Thread Oracle</div>
-    <div class="hdr-s">Seek your destined match</div>
+    <div class="hdr-t">月老廟</div>
+    <div class="hdr-s">Yue Lao — God of Love &nbsp;·&nbsp; Taiwanese Tinder</div>
   </div>
 
   <!-- INTRO -->
@@ -233,7 +225,6 @@
       <span style="font-size:11px;color:#aaa;">/ 3</span>
     </div>
 
-    <!-- canvas area — no button inside -->
     <div class="throw-wrap" id="throwWrap">
       <canvas id="gc"></canvas>
       <div class="meter-wrap" id="meter">
@@ -243,7 +234,6 @@
       </div>
     </div>
 
-    <!-- button row BELOW canvas -->
     <div class="throw-btn-row">
       <div class="hold-btn" id="holdBtn">HOLD<br>to throw</div>
     </div>
@@ -287,7 +277,8 @@ const imgFront = new Image(); imgFront.src = 'Front.png';
 
 // ── TYPEWRITER ──
 const LINES = [
-  "I am Yue Lao, keeper of the Red Thread.",
+  "I am Yue Lao, God of Love.",
+  "Taiwanese Tinder, if you will.",
   "",
   "Picture the one you seek.",
   "Hold them firmly in your heart.",
@@ -417,7 +408,6 @@ document.addEventListener('mouseup',   endPress);
 document.addEventListener('touchend',  endPress);
 
 // ── PHYSICS ──
-// Larger piece size
 const BASE_W = 56, BASE_H = 100;
 
 function zScale(z) { return 0.55 + z * 0.55; }
@@ -436,11 +426,25 @@ function makePiece(x, y, vx, vy, vz, spinX, spinY, spinZ, result, idx) {
     landed: false,
     trail: [],
     age: 0,
+    // snapshot of visual state at landing — preserved forever
+    landedFlipX: 1,
+    landedFlipY: 1,
+    landedAngleZ: 0,
+    landedImg: null,
+    landedW: BASE_W,
+    landedH: BASE_H,
   };
 }
 
 let pieces = [], rafId = null;
 const GRAV = 0.52;
+
+function getImg(p, angleY) {
+  const useBack = p.result === 'saint' ? p.idx === 0
+                : p.result === 'yin'   ? true : false;
+  const facingFront = Math.cos(angleY) >= 0;
+  return (facingFront ? useBack : !useBack) ? imgBack : imgFront;
+}
 
 function stepPieces() {
   let allLanded = pieces.length > 0;
@@ -449,8 +453,7 @@ function stepPieces() {
     allLanded = false;
     p.age++;
 
-    // save trail — only while airborne
-    p.trail.push({ x: p.x, y: p.y, z: p.z, aZ: p.angleZ, aY: p.angleY });
+    p.trail.push({ x: p.x, y: p.y, z: p.z, aZ: p.angleZ, aY: p.angleY, aX: p.angleX });
     if (p.trail.length > 18) p.trail.shift();
 
     p.vy += GRAV;
@@ -477,12 +480,23 @@ function stepPieces() {
         p.spinX *= 0.3; p.spinY *= 0.3; p.spinZ *= 0.35;
         p.bounces++;
       } else {
-        // LANDED — clear all trail, stop all spin
-        p.landed = true;
+        // LAND: snapshot current visual state exactly as-is
+        p.landed      = true;
         p.vy = p.vx = p.vz = p.spinX = p.spinY = p.spinZ = 0;
-        p.angleZ = Math.round(p.angleZ / Math.PI) * Math.PI;
-        p.angleY = 0; // snap: show correct face (angleY=0 means cos=1, front)
-        p.trail  = []; // clear trail so no residual blur
+        p.trail       = []; // clear trail — no residual blur
+
+        // Freeze the correct face based on result (override whatever angleY happened to be)
+        const useBack = p.result === 'saint' ? p.idx === 0
+                      : p.result === 'yin'   ? true : false;
+        p.landedImg   = useBack ? imgBack : imgFront;
+
+        // Keep current visual distortion (flipX, flipY, angleZ) — no snap
+        p.landedFlipX = Math.abs(Math.cos(p.angleY));
+        p.landedFlipY = 0.3 + 0.7 * Math.abs(Math.cos(p.angleX));
+        p.landedAngleZ = p.angleZ;
+        const lScl    = zScale(p.z);
+        p.landedW     = BASE_W * lScl;
+        p.landedH     = BASE_H * lScl;
       }
     }
   }
@@ -490,7 +504,7 @@ function stepPieces() {
 }
 
 function drawSinglePiece(img, alpha, x, y, w, h, angleZ, flipX, flipY) {
-  if (!img.complete || img.naturalWidth === 0) return;
+  if (!img || !img.complete || img.naturalWidth === 0) return;
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.translate(x, y);
@@ -500,36 +514,18 @@ function drawSinglePiece(img, alpha, x, y, w, h, angleZ, flipX, flipY) {
   ctx.restore();
 }
 
-function getImg(p, angleY) {
-  const useBack = p.result === 'saint' ? p.idx === 0
-                : p.result === 'yin'   ? true
-                : false;
-  // which face is toward viewer based on angleY
-  const facingFront = Math.cos(angleY) >= 0;
-  return (facingFront ? useBack : !useBack) ? imgBack : imgFront;
-}
-
 function drawPiece(p) {
+  if (p.landed) {
+    // Draw exactly the frozen snapshot — no effects, no trail
+    drawSinglePiece(p.landedImg, 1, p.x, p.y, p.landedW, p.landedH, p.landedAngleZ, p.landedFlipX, p.landedFlipY);
+    return;
+  }
+
   const scl = zScale(p.z);
   const w = BASE_W * scl;
   const h = BASE_H * scl;
 
-  if (p.landed) {
-    // CLEAN — no effects, no trail, just the image
-    const useBack = p.result === 'saint' ? p.idx === 0
-                  : p.result === 'yin'   ? true
-                  : false;
-    const img = useBack ? imgBack : imgFront;
-    if (!img.complete || img.naturalWidth === 0) return;
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.angleZ);
-    ctx.drawImage(img, -w / 2, -h / 2, w, h);
-    ctx.restore();
-    return;
-  }
-
-  // ── FLYING: motion blur trail ──
+  // Motion blur trail
   const tLen = p.trail.length;
   for (let i = 0; i < tLen; i++) {
     const t    = p.trail[i];
@@ -537,15 +533,13 @@ function drawPiece(p) {
     const tScl = zScale(t.z);
     const tw   = BASE_W * tScl;
     const th   = BASE_H * tScl;
-
-    // Multiple blur layers per trail point
     for (let b = 0; b < 4; b++) {
       const blurAlpha = frac * 0.10 * (1 - b * 0.18);
       if (blurAlpha <= 0) continue;
       const blurAY = t.aY + b * 0.12;
       const img    = getImg(p, blurAY);
       const flipX  = Math.abs(Math.cos(blurAY));
-      const flipY  = 0.25 + 0.75 * Math.abs(Math.cos(p.trail[i] ? p.angleX : p.angleX));
+      const flipY  = 0.25 + 0.75 * Math.abs(Math.cos(t.aX));
       drawSinglePiece(img, blurAlpha, t.x, t.y, tw, th, t.aZ + (b - 1.5) * 0.06, flipX, flipY);
     }
   }
