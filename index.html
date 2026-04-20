@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yue Lao — Red Thread Oracle</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f5f0e8; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    #app {
+      width: 100%; max-width: 420px;
+      min-height: 580px; background: #fff; border-radius: 16px; overflow: hidden;
+      position: relative; display: flex; flex-direction: column; align-items: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      user-select: none;
+    }
+
+    /* TOP BAR */
+    .top-bar { width:100%; background:#c8252a; padding:8px 0 6px; display:flex; justify-content:space-around; align-items:center; }
+    .lantern { display:flex; flex-direction:column; align-items:center; }
+    .l-top { width:16px; height:5px; background:#f5c842; border-radius:3px 3px 0 0; }
+    .l-body { width:20px; height:26px; background:#e8302a; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#f5c842; border:1.5px solid #f5c842; }
+    .l-tail { width:2px; height:8px; background:#f5c842; }
+    .l-tassel { width:10px; height:6px; background:#f5c842; border-radius:0 0 5px 5px; }
+
+    .app-title { color:#2d1446; font-size:19px; font-weight:600; margin-top:10px; letter-spacing:2px; }
+    .app-sub { color:#c8252a; font-size:11px; letter-spacing:1px; margin-bottom:6px; opacity:0.7; }
+
+    /* SCREENS */
+    .screen { width:100%; display:none; flex-direction:column; align-items:center; padding:0 18px 18px; flex:1; }
+    .screen.active { display:flex; }
+    #screen-intro { padding-top:4px; }
+
+    /* YUE LAO IMAGE */
+    .yl-img { width:110px; height:110px; object-fit:contain; margin:4px 0 6px; background:transparent; }
+    .yl-img-sm { width:54px; height:54px; object-fit:contain; background:transparent; }
+    .big-img { width:90px; height:90px; object-fit:contain; margin-bottom:10px; background:transparent; }
+
+    /* SPEECH BUBBLE */
+    .bubble { background:#fdf8f0; border:1.5px solid #f5c842; border-radius:12px; padding:12px 14px; max-width:320px; width:100%; position:relative; }
+    .bubble::before { content:''; position:absolute; top:-10px; left:36px; border:5px solid transparent; border-bottom-color:#f5c842; }
+    .bubble::after { content:''; position:absolute; top:-8px; left:37px; border:4.5px solid transparent; border-bottom-color:#fdf8f0; }
+    .bubble-text { font-size:13px; color:#2d1446; line-height:1.75; min-height:36px; }
+    .cursor { display:inline-block; width:2px; height:13px; background:#2d1446; margin-left:2px; vertical-align:middle; animation:blink 0.8s step-end infinite; }
+    @keyframes blink { 50% { opacity:0; } }
+
+    /* BUTTON */
+    .btn { margin-top:14px; background:#c8252a; color:#f5c842; border:2px solid #f5c842; border-radius:8px; padding:10px 28px; font-size:14px; font-weight:600; letter-spacing:1px; cursor:pointer; transition:transform 0.1s, background 0.15s; display:none; }
+    .btn:hover { background:#a01e22; }
+    .btn:active { transform:scale(0.97); }
+    .btn.show { display:block; }
+
+    /* GAME SCREEN */
+    #screen-game { padding-top:6px; }
+    .counter-row { display:flex; align-items:center; gap:8px; border:1px solid rgba(200,37,42,0.25); border-radius:20px; padding:5px 14px; margin-bottom:8px; background:rgba(200,37,42,0.04); }
+    .counter-label { color:#c8252a; font-size:11px; letter-spacing:1px; }
+    .dots { display:flex; gap:5px; }
+    .dot { width:13px; height:13px; border-radius:50%; border:1.5px solid rgba(200,37,42,0.3); background:transparent; transition:all 0.3s; }
+    .dot.on { background:#c8252a; border-color:#c8252a; }
+
+    /* THROW AREA */
+    .throw-area { width:100%; height:240px; position:relative; overflow:hidden; border-radius:10px; background:#fdf8f0; border:1.5px solid rgba(200,37,42,0.15); margin-bottom:8px; touch-action:none; cursor:grab; }
+    .throw-area:active { cursor:grabbing; }
+    canvas#gc { display:block; width:100%; height:100%; }
+    .hint { position:absolute; bottom:10px; left:0; right:0; text-align:center; font-size:11px; color:rgba(200,37,42,0.45); pointer-events:none; letter-spacing:1px; transition:opacity 0.4s; }
+
+    /* RESULT */
+    .result-area { min-height:50px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:2px 0; }
+    .res-name { font-size:24px; font-weight:600; letter-spacing:2px; }
+    .res-desc { font-size:11px; color:#888; margin-top:2px; }
+    .col-saint { color:#c8252a; }
+    .col-yin   { color:#4a90d9; }
+    .col-laugh { color:#b07030; }
+
+    /* MINI ROW */
+    .mini-row { display:flex; align-items:flex-end; gap:10px; width:100%; margin-top:4px; }
+    .mini-bub { flex:1; background:#fdf8f0; border:1px solid rgba(200,37,42,0.2); border-radius:10px; padding:8px 12px; color:#5a3a3a; font-size:12px; line-height:1.65; min-height:42px; }
+
+    /* FAIL / SUCCESS */
+    #screen-fail, #screen-success { justify-content:center; padding-top:20px; }
+    .fail-title { color:#4a90d9; font-size:20px; font-weight:600; letter-spacing:2px; margin-bottom:8px; }
+    .fail-msg { color:#666; font-size:12px; text-align:center; line-height:1.8; margin-bottom:16px; max-width:270px; white-space:pre-line; }
+    .success-title { color:#c8252a; font-size:22px; font-weight:600; letter-spacing:3px; margin-bottom:4px; }
+    .success-sub { color:#999; font-size:11px; letter-spacing:1px; margin-bottom:10px; }
+    .success-msg { color:#555; font-size:12px; text-align:center; line-height:1.8; max-width:260px; margin-bottom:16px; white-space:pre-line; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+    .fu { animation:fadeUp 0.4s ease forwards; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- LANTERN BAR -->
+  <div class="top-bar">
+    <div class="lantern"><div class="l-top"></div><div class="l-body">緣</div><div class="l-tail"></div><div class="l-tassel"></div></div>
+    <div class="lantern"><div class="l-top"></div><div class="l-body">月</div><div class="l-tail"></div><div class="l-tassel"></div></div>
+    <div class="lantern"><div class="l-top"></div><div class="l-body">老</div><div class="l-tail"></div><div class="l-tassel"></div></div>
+    <div class="lantern"><div class="l-top"></div><div class="l-body">廟</div><div class="l-tail"></div><div class="l-tassel"></div></div>
+    <div class="lantern"><div class="l-top"></div><div class="l-body">求</div><div class="l-tail"></div><div class="l-tassel"></div></div>
+  </div>
+
+  <div class="app-title">Yue Lao — Red Thread Oracle</div>
+  <div class="app-sub">Seek your destined match</div>
+
+  <!-- INTRO SCREEN -->
+  <div class="screen active" id="screen-intro">
+    <img class="yl-img" src="yuelao.png" alt="Yue Lao">
+    <div class="bubble"><div class="bubble-text" id="speechText"></div></div>
+    <button class="btn" id="btnStart">Begin the Ritual</button>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="screen" id="screen-game">
+    <div class="counter-row">
+      <span class="counter-label">Holy Throws</span>
+      <div class="dots" id="dots"></div>
+      <span style="color:#c8252a;font-size:15px;font-weight:600;min-width:20px;text-align:center;" id="saintNum">0</span>
+      <span style="font-size:11px;color:#aaa;">/ 3</span>
+    </div>
+    <div class="throw-area" id="throwArea">
+      <canvas id="gc"></canvas>
+      <div class="hint" id="hint">↑ Swipe up to throw</div>
+    </div>
+    <div class="result-area" id="resultArea"></div>
+    <div class="mini-row">
+      <img class="yl-img-sm" src="yuelao.png" alt="Yue Lao">
+      <div class="mini-bub" id="miniBub">Hold your ideal person in mind, then swipe up to cast the jiaobei...</div>
+    </div>
+  </div>
+
+  <!-- FAIL SCREEN -->
+  <div class="screen" id="screen-fail">
+    <img class="big-img" src="yuelao.png" alt="Yue Lao">
+    <div class="fail-title">Yin Jiao — Negative!</div>
+    <div class="fail-msg" id="failMsg"></div>
+    <button class="btn show" id="btnRetry">Reconsider &amp; Try Again</button>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="screen" id="screen-success">
+    <div style="font-size:44px;margin-bottom:8px;">🧧</div>
+    <div class="success-title">Red Thread Tied!</div>
+    <div class="success-sub">Yue Lao has heard your prayer</div>
+    <svg width="260" height="50" viewBox="0 0 260 50" style="margin:6px 0;">
+      <path id="redLine" d="M10 25 Q65 5 130 25 Q195 45 250 25" stroke="#c8252a" stroke-width="2.5" fill="none" stroke-dasharray="260" stroke-dashoffset="260"/>
+      <circle cx="10" cy="25" r="4" fill="#c8252a"/>
+      <circle cx="250" cy="25" r="4" fill="#c8252a"/>
+    </svg>
+    <div class="success-msg" id="successMsg"></div>
+    <button class="btn show" id="btnAgain">Ask Again</button>
+  </div>
+
+</div>
+
+<script>
+// ── IMAGE PATHS (same folder as index.html) ──
+// Back.png  = flat face (pale wood)
+// Front.png = curved face (red concave side)
+// yuelao.png = Yue Lao pixel art
+
+const imgBack  = new Image(); imgBack.src  = 'Back.png';
+const imgFront = new Image(); imgFront.src = 'Front.png';
+
+// ── TYPEWRITER INTRO ──
+const LINES = [
+  "I am Yue Lao, the Old Man of the Moon,",
+  "keeper of the Red Thread of Fate.",
+  "",
+  "Close your eyes. Picture the one you seek.",
+  "Hold that image firmly in your heart.",
+  "",
+  "Then swipe up to cast the jiaobei.",
+  "Three Holy Throws in a row, and I will",
+  "tie the red thread for you.",
+  "",
+  "If a Yin Jiao appears — your standards",
+  "may be too high. Adjust, and try again."
+];
+let charIdx = 0, displayed = '';
+const speechEl = document.getElementById('speechText');
+const btnStart  = document.getElementById('btnStart');
+const fullText  = LINES.join('\n');
+
+function typeChar() {
+  if (charIdx < fullText.length) {
+    displayed += fullText[charIdx++];
+    speechEl.innerHTML = displayed.replace(/\n/g, '<br>') + '<span class="cursor"></span>';
+    setTimeout(typeChar, charIdx < 10 ? 60 : 28);
+  } else {
+    speechEl.innerHTML = displayed.replace(/\n/g, '<br>');
+    btnStart.classList.add('show');
+  }
+}
+setTimeout(typeChar, 500);
+
+// ── SCREEN MANAGER ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// ── GAME STATE ──
+let saintCount = 0;
+const NEED = 3;
+let throwing = false;
+
+const FAIL_MSGS = [
+  "Hmm — your expectations may be a little too perfect.\nEven Yue Lao has limits!\nTake a breath, soften your heart, and try again.",
+  "The thread snapped. Your ideal is set too high.\nA small adjustment in your heart,\nand destiny may find its way.",
+  "Yue Lao shakes his head gently.\nPerhaps focus less on what you want,\nand more on how you want to feel.",
+  "Too many conditions! Love doesn't work\nlike a checklist. Clear your mind\nand come back with an open heart.",
+];
+const MINI = {
+  idle:   'Hold your ideal person in mind, then swipe up to cast the jiaobei...',
+  saint1: 'One Holy Throw! Keep going — stay focused...',
+  saint2: 'Two in a row! One more — breathe and believe...',
+  laugh:  'A Laughing Throw! Yue Lao smiles — try again.',
+  yin:    'Yin Jiao... your standards need a little adjusting.',
+};
+
+// ── CANVAS SETUP ──
+const throwArea = document.getElementById('throwArea');
+const gc  = document.getElementById('gc');
+const ctx = gc.getContext('2d');
+let W, H;
+
+function resize() {
+  W = throwArea.clientWidth;
+  H = throwArea.clientHeight;
+  gc.width  = W;
+  gc.height = H;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── DOTS ──
+function updateUI() {
+  document.getElementById('saintNum').textContent = saintCount;
+  const d = document.getElementById('dots');
+  d.innerHTML = '';
+  for (let i = 0; i < NEED; i++) {
+    const el = document.createElement('div');
+    el.className = 'dot' + (i < saintCount ? ' on' : '');
+    d.appendChild(el);
+  }
+}
+updateUI();
+
+// ── PIECE PHYSICS ──
+function makePiece(x, y, vx, vy, spin, result, idx) {
+  return { x, y, vx, vy, spin, angle: (Math.random() - 0.5) * 1.2, result, idx, bounces: 0, landed: false };
+}
+
+let pieces = [], rafId = null;
+const GRAVITY = 0.6;
+const PW = 40, PH = 72; // piece draw size
+
+function landY(idx) { return H - 64 - idx * 20; }
+
+function stepPieces() {
+  let allLanded = pieces.length > 0;
+  for (const p of pieces) {
+    if (p.landed) continue;
+    allLanded = false;
+    p.vy += GRAVITY;
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.angle += p.spin;
+    if (p.x < PW / 2)  { p.x = PW / 2;  p.vx = Math.abs(p.vx) * 0.5; }
+    if (p.x > W - PW / 2) { p.x = W - PW / 2; p.vx = -Math.abs(p.vx) * 0.5; }
+    const ly = landY(p.idx);
+    if (p.y >= ly && p.vy > 0) {
+      p.y = ly;
+      if (p.bounces < 2 && Math.abs(p.vy) > 1.5) {
+        p.vy = -p.vy * (0.3 - p.bounces * 0.1);
+        p.vx *= 0.65; p.spin *= 0.45; p.bounces++;
+      } else {
+        p.landed = true; p.vy = 0; p.vx = 0; p.spin = 0;
+        p.angle  = Math.round(p.angle / Math.PI) * Math.PI;
+      }
+    }
+  }
+  return allLanded;
+}
+
+function drawPiece(p) {
+  // saint: piece0 = Back (flat/pale), piece1 = Front (red curved)
+  // yin:   both Back
+  // laugh: both Front
+  let useBack;
+  if      (p.result === 'saint') useBack = (p.idx === 0);
+  else if (p.result === 'yin')   useBack = true;
+  else                            useBack = false;
+
+  const img = useBack ? imgBack : imgFront;
+  if (!img.complete || img.naturalWidth === 0) return;
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(p.angle);
+  ctx.drawImage(img, -PW / 2, -PH / 2, PW, PH);
+  ctx.restore();
+}
+
+function renderPieces() {
+  ctx.clearRect(0, 0, W, H);
+  pieces.forEach(drawPiece);
+}
+
+function startAnim(result, vx, vy, fromX) {
+  if (rafId) cancelAnimationFrame(rafId);
+  throwing = true;
+  const cx = fromX || W / 2;
+  pieces = [
+    makePiece(cx - 22 + (Math.random() - 0.5) * 6, H + 10, vx * 0.85 + (Math.random() - 0.5) * 0.8, vy * 1.0,  (Math.random() - 0.5) * 0.2,  result, 0),
+    makePiece(cx + 22 + (Math.random() - 0.5) * 6, H + 10, vx * 1.15 + (Math.random() - 0.5) * 0.8, vy * 0.95, (Math.random() - 0.5) * 0.22, result, 1),
+  ];
+  function loop() {
+    const done = stepPieces();
+    renderPieces();
+    if (done) { throwing = false; onResult(result); }
+    else rafId = requestAnimationFrame(loop);
+  }
+  rafId = requestAnimationFrame(loop);
+}
+
+// ── RESULT HANDLER ──
+const resultArea = document.getElementById('resultArea');
+const miniBub    = document.getElementById('miniBub');
+const hintEl     = document.getElementById('hint');
+
+function showResult(result) {
+  const map = {
+    saint: { name: 'Holy Throw!',      desc: 'One flat, one curved — Yue Lao nods',       cls: 'col-saint' },
+    yin:   { name: 'Yin Jiao',         desc: 'Both flat — your heart needs adjusting',      cls: 'col-yin'   },
+    laugh: { name: 'Laughing Throw',   desc: 'Both curved — try again with focus',          cls: 'col-laugh' },
+  };
+  const m = map[result];
+  resultArea.innerHTML = `<div class="res-name fu ${m.cls}">${m.name}</div><div class="res-desc fu">${m.desc}</div>`;
+}
+
+function onResult(result) {
+  showResult(result);
+  hintEl.style.opacity = '1';
+  if (result === 'saint') {
+    saintCount++;
+    updateUI();
+    if (saintCount >= NEED) { setTimeout(goSuccess, 1200); return; }
+    miniBub.textContent = [MINI.saint1, MINI.saint2][saintCount - 1] || 'Keep going!';
+  } else if (result === 'yin') {
+    miniBub.textContent = MINI.yin;
+    setTimeout(goFail, 1600);
+  } else {
+    miniBub.textContent = MINI.laugh;
+  }
+}
+
+function goFail() {
+  document.getElementById('failMsg').textContent = FAIL_MSGS[Math.floor(Math.random() * FAIL_MSGS.length)];
+  showScreen('fail');
+}
+
+function goSuccess() {
+  document.getElementById('successMsg').textContent =
+    'You cast 3 Holy Throws in a row.\nYue Lao has quietly tied a red thread\nbetween you and your destined one.\nThe timing is in the universe\'s hands.';
+  // animate red line
+  const line = document.getElementById('redLine');
+  if (line) {
+    line.style.transition = 'stroke-dashoffset 1.2s ease';
+    setTimeout(() => { line.style.strokeDashoffset = '0'; }, 50);
+  }
+  showScreen('success');
+}
+
+// ── SWIPE INPUT ──
+let dragSX, dragSY, dragT, dragging = false;
+
+function getXY(e) {
+  return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+                   : { x: e.clientX, y: e.clientY };
+}
+function onDown(e) {
+  if (throwing) return;
+  const r = throwArea.getBoundingClientRect(), { x, y } = getXY(e);
+  dragSX = x - r.left; dragSY = y - r.top;
+  dragT = Date.now(); dragging = true;
+}
+function onUp(e) {
+  if (!dragging || throwing) return;
+  dragging = false;
+  const r = throwArea.getBoundingClientRect();
+  let ex, ey;
+  if (e.changedTouches) { ex = e.changedTouches[0].clientX - r.left; ey = e.changedTouches[0].clientY - r.top; }
+  else { ex = e.clientX - r.left; ey = e.clientY - r.top; }
+  const dx = ex - dragSX, dy = ey - dragSY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const dt = (Date.now() - dragT) / 1000;
+  if (dy > -15 || dist < 25) return;  // must be upward
+  hintEl.style.opacity = '0';
+  const spd = Math.min(dist / dt / 140, 16);
+  const ang = Math.atan2(dy, dx);
+  const vx = Math.cos(ang) * spd * 0.35;
+  const vy = -spd * 1.15;
+  const r2 = Math.random();
+  const result = r2 < 0.45 ? 'saint' : r2 < 0.72 ? 'yin' : 'laugh';
+  startAnim(result, vx, vy, dragSX);
+}
+
+throwArea.addEventListener('mousedown', onDown);
+throwArea.addEventListener('mouseup', onUp);
+throwArea.addEventListener('touchstart', onDown, { passive: true });
+throwArea.addEventListener('touchend', onUp);
+
+// ── BUTTON HANDLERS ──
+function resetGame() {
+  saintCount = 0; updateUI();
+  if (rafId) cancelAnimationFrame(rafId);
+  pieces = []; ctx.clearRect(0, 0, W, H);
+  resultArea.innerHTML = '';
+  hintEl.style.opacity = '1';
+  miniBub.textContent = MINI.idle;
+  showScreen('game');
+  resize();
+}
+
+document.getElementById('btnStart').addEventListener('click', resetGame);
+document.getElementById('btnRetry').addEventListener('click', () => {
+  miniBub.textContent = 'Take a breath. Open your heart. Try again...';
+  resetGame();
+});
+document.getElementById('btnAgain').addEventListener('click', resetGame);
+</script>
+</body>
+</html>
