@@ -6,179 +6,70 @@
   <title>月老廟 — Red Thread Oracle</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       background: #f5f0e8;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      display: flex; justify-content: center; align-items: flex-start;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       overflow-x: hidden;
     }
-
     #app {
-      width: 100%;
-      max-width: 480px;
-      min-height: 100vh;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 40px rgba(0,0,0,0.10);
-      overflow: hidden;
+      width: 100%; max-width: 480px; min-height: 100vh;
+      background: #fff; display: flex; flex-direction: column;
+      box-shadow: 0 0 40px rgba(0,0,0,0.10); overflow: hidden;
     }
-
-    /* TOP BAR */
     .top-bar {
-      width: 100%;
-      background: #c8252a;
-      padding: 8px 0 6px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 18px;
-      flex-shrink: 0;
+      width: 100%; background: #c8252a; padding: 8px 0 6px;
+      display: flex; justify-content: center; align-items: center; gap: 18px; flex-shrink: 0;
     }
     .lan { display: flex; flex-direction: column; align-items: center; }
     .lt  { width: 16px; height: 5px; background: #f5c842; border-radius: 3px 3px 0 0; }
     .lb  { width: 20px; height: 26px; background: #e8302a; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #f5c842; border: 1.5px solid #f5c842; font-weight: 600; }
     .ll  { width: 2px; height: 8px; background: #f5c842; }
     .lk  { width: 10px; height: 6px; background: #f5c842; border-radius: 0 0 5px 5px; }
-
     .hdr { width: 100%; text-align: center; padding: 8px 0 3px; flex-shrink: 0; }
     .hdr-t { color: #2d1446; font-size: 18px; font-weight: 700; letter-spacing: 2px; }
     .hdr-s { color: #c8252a; font-size: 11px; opacity: .7; letter-spacing: 1px; }
-
-    /* SCREENS */
     .screen { display: none; flex-direction: column; align-items: center; flex: 1; width: 100%; min-height: 0; }
     .screen.on { display: flex; }
-
-    /* ── INTRO ── */
     #s-intro { justify-content: flex-start; }
-    .intro-inner {
-      width: 100%;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 14px 18px 20px;
-    }
+    .intro-inner { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; padding: 14px 18px 20px; }
     .yl { width: 120px; height: 120px; object-fit: contain; margin: 8px 0 10px; }
-
-    .bub {
-      width: 100%;
-      background: #fdf8f0; border: 1.5px solid #f5c842;
-      border-radius: 12px; padding: 13px 15px; position: relative;
-    }
+    .bub { width: 100%; background: #fdf8f0; border: 1.5px solid #f5c842; border-radius: 12px; padding: 13px 15px; position: relative; }
     .bub::before { content: ''; position: absolute; top: -10px; left: 36px; border: 5px solid transparent; border-bottom-color: #f5c842; }
     .bub::after  { content: ''; position: absolute; top: -8px;  left: 37px; border: 4.5px solid transparent; border-bottom-color: #fdf8f0; }
     .bub-t { font-size: 13px; color: #2d1446; line-height: 1.8; min-height: 36px; }
-
     .cur { display: inline-block; width: 2px; height: 13px; background: #2d1446; margin-left: 2px; vertical-align: middle; animation: bl .8s step-end infinite; }
     @keyframes bl { 50% { opacity: 0; } }
-
     .intro-spacer { flex: 1; min-height: 20px; }
-
-    .btn {
-      background: #c8252a; color: #f5c842;
-      border: 2px solid #f5c842; border-radius: 8px; padding: 13px 36px;
-      font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer;
-      display: none; transition: transform .1s, background .15s;
-    }
+    .btn { background: #c8252a; color: #f5c842; border: 2px solid #f5c842; border-radius: 8px; padding: 13px 36px; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; display: none; transition: transform .1s, background .15s; }
     .btn:hover { background: #a01e22; }
     .btn:active { transform: scale(.97); }
     .btn.on { display: block; }
-
-    /* ── GAME ── */
     #s-game { padding: 0; justify-content: flex-start; }
-
-    .ctr-bar {
-      display: flex; align-items: center; gap: 8px;
-      border: 1px solid rgba(200,37,42,.2); border-radius: 20px;
-      padding: 5px 14px; margin: 8px 16px 6px;
-      background: rgba(200,37,42,.03); flex-shrink: 0;
-      width: calc(100% - 32px);
-    }
+    .ctr-bar { display: flex; align-items: center; gap: 8px; border: 1px solid rgba(200,37,42,.2); border-radius: 20px; padding: 5px 14px; margin: 8px 16px 6px; background: rgba(200,37,42,.03); flex-shrink: 0; width: calc(100% - 32px); }
     .ctr-lbl { color: #c8252a; font-size: 11px; letter-spacing: 1px; }
     .dots { display: flex; gap: 5px; }
     .dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid rgba(200,37,42,.3); background: transparent; transition: all .3s; }
     .dot.on { background: #c8252a; border-color: #c8252a; }
-
-    .throw-wrap {
-      width: 100%; flex: 1; min-height: 0;
-      position: relative;
-      background: #fdf8f0;
-      border-top: 1px solid rgba(200,37,42,.1);
-      overflow: hidden;
-      touch-action: none;
-    }
+    .throw-wrap { width: 100%; flex: 1; min-height: 0; position: relative; background: #fdf8f0; border-top: 1px solid rgba(200,37,42,.1); overflow: hidden; touch-action: none; }
     canvas#gc { display: block; width: 100%; height: 100%; }
-
-    /* POWER METER */
-    .meter-wrap {
-      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      pointer-events: none; opacity: 0; transition: opacity .2s;
-    }
+    .meter-wrap { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; opacity: 0; transition: opacity .2s; }
     .meter-wrap.vis { opacity: 1; }
     .meter-pct { font-size: 14px; font-weight: 700; color: #c8252a; }
-    .meter-track {
-      width: 24px; height: 180px;
-      background: rgba(0,0,0,.07); border-radius: 12px;
-      overflow: hidden; position: relative;
-      border: 1px solid rgba(200,37,42,.2);
-    }
-    .meter-fill {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: #4caf50; border-radius: 12px;
-      transition: height .04s linear;
-    }
+    .meter-track { width: 24px; height: 180px; background: rgba(0,0,0,.07); border-radius: 12px; overflow: hidden; position: relative; border: 1px solid rgba(200,37,42,.2); }
+    .meter-fill { position: absolute; bottom: 0; left: 0; right: 0; background: #4caf50; border-radius: 12px; transition: height .04s linear; }
     .meter-lbl { font-size: 10px; color: #c8252a; font-weight: 700; letter-spacing: .5px; }
-
-    /* HOLD BUTTON — below canvas */
-    .throw-btn-row {
-      width: 100%;
-      display: flex; justify-content: center; align-items: center;
-      padding: 12px 0 10px;
-      flex-shrink: 0;
-      background: #fff;
-      border-top: 1px solid rgba(200,37,42,.08);
-    }
-    .hold-btn {
-      width: 84px; height: 84px; border-radius: 50%;
-      background: #c8252a; border: 3px solid #f5c842;
-      color: #f5c842; font-size: 12px; font-weight: 700; letter-spacing: .5px;
-      display: flex; align-items: center; justify-content: center; text-align: center;
-      cursor: pointer; touch-action: none; user-select: none;
-      box-shadow: 0 4px 16px rgba(200,37,42,.3);
-      transition: transform .1s, background .1s;
-      line-height: 1.3;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .throw-btn-row { width: 100%; display: flex; justify-content: center; align-items: center; padding: 12px 0 10px; flex-shrink: 0; background: #fff; border-top: 1px solid rgba(200,37,42,.08); }
+    .hold-btn { width: 84px; height: 84px; border-radius: 50%; background: #c8252a; border: 3px solid #f5c842; color: #f5c842; font-size: 12px; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; touch-action: none; user-select: none; box-shadow: 0 4px 16px rgba(200,37,42,.3); transition: transform .1s, background .1s; line-height: 1.3; -webkit-tap-highlight-color: transparent; }
     .hold-btn.pressing { background: #8a1a1c; transform: scale(.91); }
-
-    .res-area {
-      width: 100%; min-height: 46px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 3px 0; flex-shrink: 0;
-    }
+    .res-area { width: 100%; min-height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3px 0; flex-shrink: 0; }
     .res-name { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
     .res-desc { font-size: 11px; color: #888; margin-top: 1px; }
     .cs { color: #c8252a; } .cy { color: #4a90d9; } .cl { color: #b07030; }
-
-    .mini-row {
-      display: flex; align-items: flex-end; gap: 10px;
-      width: 100%; padding: 2px 14px 10px; flex-shrink: 0;
-    }
+    .mini-row { display: flex; align-items: flex-end; gap: 10px; width: 100%; padding: 2px 14px 10px; flex-shrink: 0; }
     .yl-sm { width: 50px; height: 50px; object-fit: contain; }
-    .mini-bub {
-      flex: 1; background: #fdf8f0; border: 1px solid rgba(200,37,42,.18);
-      border-radius: 10px; padding: 7px 11px;
-      color: #5a3a3a; font-size: 11.5px; line-height: 1.6; min-height: 40px;
-    }
-
+    .mini-bub { flex: 1; background: #fdf8f0; border: 1px solid rgba(200,37,42,.18); border-radius: 10px; padding: 7px 11px; color: #5a3a3a; font-size: 11.5px; line-height: 1.6; min-height: 40px; }
     #s-fail, #s-success { padding: 24px 20px 20px; justify-content: center; }
     .yl-big { width: 88px; height: 88px; object-fit: contain; margin-bottom: 10px; }
     .fail-t { color: #4a90d9; font-size: 20px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
@@ -186,27 +77,22 @@
     .succ-t { color: #c8252a; font-size: 22px; font-weight: 700; letter-spacing: 3px; margin-bottom: 4px; }
     .succ-s { color: #999; font-size: 11px; letter-spacing: 1px; margin-bottom: 10px; }
     .succ-m { color: #555; font-size: 13px; text-align: center; line-height: 1.8; max-width: 260px; margin-bottom: 16px; white-space: pre-line; }
-
     @keyframes fu { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
     .fu { animation: fu .4s ease forwards; }
   </style>
 </head>
 <body>
 <div id="app">
-
-  <!-- 4 lanterns: 月 老 廟 + decoration -->
   <div class="top-bar">
     <div class="lan"><div class="lt"></div><div class="lb">月</div><div class="ll"></div><div class="lk"></div></div>
     <div class="lan"><div class="lt"></div><div class="lb">老</div><div class="ll"></div><div class="lk"></div></div>
     <div class="lan"><div class="lt"></div><div class="lb">廟</div><div class="ll"></div><div class="lk"></div></div>
   </div>
-
   <div class="hdr">
     <div class="hdr-t">月老廟</div>
     <div class="hdr-s">Yue Lao — God of Love &nbsp;·&nbsp; Taiwanese Tinder</div>
   </div>
 
-  <!-- INTRO -->
   <div class="screen on" id="s-intro">
     <div class="intro-inner">
       <img class="yl" src="yuelao.png" alt="Yue Lao">
@@ -216,7 +102,6 @@
     </div>
   </div>
 
-  <!-- GAME -->
   <div class="screen" id="s-game">
     <div class="ctr-bar">
       <span class="ctr-lbl">Holy Throws</span>
@@ -224,7 +109,6 @@
       <span style="color:#c8252a;font-size:15px;font-weight:700;min-width:20px;text-align:center;" id="sNum">0</span>
       <span style="font-size:11px;color:#aaa;">/ 3</span>
     </div>
-
     <div class="throw-wrap" id="throwWrap">
       <canvas id="gc"></canvas>
       <div class="meter-wrap" id="meter">
@@ -233,11 +117,9 @@
         <div class="meter-lbl">POWER</div>
       </div>
     </div>
-
     <div class="throw-btn-row">
       <div class="hold-btn" id="holdBtn">HOLD<br>to throw</div>
     </div>
-
     <div class="res-area" id="resArea"></div>
     <div class="mini-row">
       <img class="yl-sm" src="yuelao.png" alt="">
@@ -245,7 +127,6 @@
     </div>
   </div>
 
-  <!-- FAIL -->
   <div class="screen" id="s-fail">
     <img class="yl-big" src="yuelao.png" alt="">
     <div class="fail-t">Yin Jiao!</div>
@@ -253,14 +134,12 @@
     <button class="btn on" id="bRetry">Reconsider &amp; Try Again</button>
   </div>
 
-  <!-- SUCCESS -->
   <div class="screen" id="s-success">
     <div style="font-size:44px;margin-bottom:8px;">🧧</div>
     <div class="succ-t">Red Thread Tied!</div>
     <div class="succ-s">Yue Lao has heard your prayer</div>
     <svg width="260" height="48" viewBox="0 0 260 48" style="margin:6px 0;">
-      <path d="M8 24 Q65 4 130 24 Q195 44 252 24" stroke="#c8252a" stroke-width="2.5" fill="none"
-        stroke-dasharray="260" stroke-dashoffset="260">
+      <path d="M8 24 Q65 4 130 24 Q195 44 252 24" stroke="#c8252a" stroke-width="2.5" fill="none" stroke-dasharray="260" stroke-dashoffset="260">
         <animate attributeName="stroke-dashoffset" from="260" to="0" dur="1.2s" fill="freeze"/>
       </path>
       <circle cx="8" cy="24" r="4" fill="#c8252a"/>
@@ -269,8 +148,8 @@
     <div class="succ-m" id="succMsg"></div>
     <button class="btn on" id="bAgain">Ask Again</button>
   </div>
-
 </div>
+
 <script>
 const imgBack  = new Image(); imgBack.src  = 'Back.png';
 const imgFront = new Image(); imgFront.src = 'Front.png';
@@ -291,10 +170,9 @@ const LINES = [
   "and I will tie the red thread for you."
 ];
 let ci = 0, disp = '';
-const spt    = document.getElementById('spt');
+const spt = document.getElementById('spt');
 const bStart = document.getElementById('bStart');
-const full   = LINES.join('\n');
-
+const full = LINES.join('\n');
 function typeChar() {
   if (ci < full.length) {
     disp += full[ci++];
@@ -312,7 +190,6 @@ function showS(id) {
   document.getElementById(id).classList.add('on');
 }
 
-// ── STATE ──
 let saintCount = 0, throwing = false;
 const NEED = 3;
 const FAILS = [
@@ -334,17 +211,13 @@ const wrap = document.getElementById('throwWrap');
 const gc   = document.getElementById('gc');
 const ctx  = gc.getContext('2d');
 let W, H;
-
 function resize() {
-  W = wrap.clientWidth;
-  H = wrap.clientHeight;
-  gc.width  = W;
-  gc.height = H;
+  W = wrap.clientWidth; H = wrap.clientHeight;
+  gc.width = W; gc.height = H;
 }
 resize();
 window.addEventListener('resize', resize);
 
-// ── DOTS ──
 function updateUI() {
   document.getElementById('sNum').textContent = saintCount;
   const d = document.getElementById('dots'); d.innerHTML = '';
@@ -361,7 +234,6 @@ const meter   = document.getElementById('meter');
 const mFill   = document.getElementById('mFill');
 const mPct    = document.getElementById('mPct');
 const holdBtn = document.getElementById('holdBtn');
-
 let pressing = false, pressStart = 0, powerRaf = null;
 const MAX_HOLD = 1100;
 
@@ -409,10 +281,12 @@ document.addEventListener('touchend',  endPress);
 
 // ── PHYSICS ──
 const BASE_W = 56, BASE_H = 100;
+const GRAV = 0.52;
 
 function zScale(z) { return 0.55 + z * 0.55; }
 function landY(idx) { return H - 55 - idx * 28; }
 
+// Piece states: 'flying' | 'rocking' | 'settled'
 function makePiece(x, y, vx, vy, vz, spinX, spinY, spinZ, result, idx) {
   return {
     x, y, z: -0.2,
@@ -423,23 +297,27 @@ function makePiece(x, y, vx, vy, vz, spinX, spinY, spinZ, result, idx) {
     angleZ: (Math.random() - .5) * 0.8,
     result, idx,
     bounces: 0,
-    landed: false,
+    state: 'flying',  // 'flying' | 'rocking' | 'settled'
     trail: [],
     age: 0,
-    // snapshot of visual state at landing — preserved forever
-    landedFlipX: 1,
-    landedFlipY: 1,
-    landedAngleZ: 0,
-    landedImg: null,
-    landedW: BASE_W,
-    landedH: BASE_H,
+    // rocking settle
+    rockAngle: 0,       // current rock angle (left-right tilt)
+    rockVel: 0,         // angular velocity of rock
+    rockImg: null,      // which face is up
+    landZ: 0,           // z frozen at landing
   };
 }
 
 let pieces = [], rafId = null;
-const GRAV = 0.52;
 
-function getImg(p, angleY) {
+function getCorrectImg(p) {
+  // The face that should be UP (correct result face)
+  const useBack = p.result === 'saint' ? p.idx === 0
+                : p.result === 'yin'   ? true : false;
+  return useBack ? imgBack : imgFront;
+}
+
+function getFlyImg(p, angleY) {
   const useBack = p.result === 'saint' ? p.idx === 0
                 : p.result === 'yin'   ? true : false;
   const facingFront = Math.cos(angleY) >= 0;
@@ -447,10 +325,32 @@ function getImg(p, angleY) {
 }
 
 function stepPieces() {
-  let allLanded = pieces.length > 0;
+  let allDone = pieces.length > 0;
+
   for (const p of pieces) {
-    if (p.landed) continue;
-    allLanded = false;
+    if (p.state === 'settled') continue;
+
+    if (p.state === 'rocking') {
+      // Damped pendulum rocking toward 0 (flat, face up)
+      // Spring constant + damping
+      const spring = 0.045;
+      const damp   = 0.88;
+      p.rockVel += -spring * p.rockAngle;
+      p.rockVel *= damp;
+      p.rockAngle += p.rockVel;
+
+      if (Math.abs(p.rockAngle) < 0.003 && Math.abs(p.rockVel) < 0.003) {
+        p.rockAngle = 0;
+        p.rockVel   = 0;
+        p.state     = 'settled';
+      } else {
+        allDone = false;
+      }
+      continue;
+    }
+
+    // ── FLYING ──
+    allDone = false;
     p.age++;
 
     p.trail.push({ x: p.x, y: p.y, z: p.z, aZ: p.angleZ, aY: p.angleY, aX: p.angleX });
@@ -458,10 +358,8 @@ function stepPieces() {
 
     p.vy += GRAV;
     p.x  += p.vx; p.y += p.vy; p.z += p.vz;
-    p.angleX += p.spinX;
-    p.angleY += p.spinY;
-    p.angleZ += p.spinZ;
-    p.vz     *= 0.97;
+    p.angleX += p.spinX; p.angleY += p.spinY; p.angleZ += p.spinZ;
+    p.vz *= 0.97;
 
     if (p.z > 0.9)  { p.z = 0.9;  p.vz = 0; }
     if (p.z < -0.5) { p.z = -0.5; }
@@ -480,27 +378,25 @@ function stepPieces() {
         p.spinX *= 0.3; p.spinY *= 0.3; p.spinZ *= 0.35;
         p.bounces++;
       } else {
-        // LAND: snapshot current visual state exactly as-is
-        p.landed      = true;
+        // Transition to ROCKING
         p.vy = p.vx = p.vz = p.spinX = p.spinY = p.spinZ = 0;
-        p.trail       = []; // clear trail — no residual blur
+        p.trail  = [];
+        p.landZ  = p.z;
+        p.state  = 'rocking';
+        p.rockImg = getCorrectImg(p);
 
-        // Freeze the correct face based on result (override whatever angleY happened to be)
-        const useBack = p.result === 'saint' ? p.idx === 0
-                      : p.result === 'yin'   ? true : false;
-        p.landedImg   = useBack ? imgBack : imgFront;
-
-        // Keep current visual distortion (flipX, flipY, angleZ) — no snap
-        p.landedFlipX = Math.abs(Math.cos(p.angleY));
-        p.landedFlipY = 0.3 + 0.7 * Math.abs(Math.cos(p.angleX));
-        p.landedAngleZ = p.angleZ;
-        const lScl    = zScale(p.z);
-        p.landedW     = BASE_W * lScl;
-        p.landedH     = BASE_H * lScl;
+        // Initial rock angle from whatever in-plane angle it had — clamped
+        // So it rocks from that angle toward flat
+        p.rockAngle = ((p.angleZ % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+        if (p.rockAngle > Math.PI) p.rockAngle -= Math.PI * 2;
+        // Clamp to ±0.6 rad so it's visible but not crazy
+        p.rockAngle = Math.max(-0.6, Math.min(0.6, p.rockAngle));
+        p.rockVel   = (Math.random() - 0.5) * 0.04; // tiny random start kick
       }
     }
   }
-  return allLanded;
+
+  return allDone;
 }
 
 function drawSinglePiece(img, alpha, x, y, w, h, angleZ, flipX, flipY) {
@@ -515,17 +411,27 @@ function drawSinglePiece(img, alpha, x, y, w, h, angleZ, flipX, flipY) {
 }
 
 function drawPiece(p) {
-  if (p.landed) {
-    // Draw exactly the frozen snapshot — no effects, no trail
-    drawSinglePiece(p.landedImg, 1, p.x, p.y, p.landedW, p.landedH, p.landedAngleZ, p.landedFlipX, p.landedFlipY);
-    return;
-  }
-
-  const scl = zScale(p.z);
+  const scl = zScale(p.state === 'rocking' || p.state === 'settled' ? p.landZ : p.z);
   const w = BASE_W * scl;
   const h = BASE_H * scl;
 
-  // Motion blur trail
+  if (p.state === 'rocking') {
+    // Draw correct face, rocking left-right via angleZ = rockAngle
+    // flipX/flipY = 1 (face-on, no perspective distortion — it's lying flat)
+    // Subtle Y squish to simulate lying flat on surface
+    const flattenY = 0.82 + 0.18 * Math.cos(p.rockAngle); // slightly flattened
+    drawSinglePiece(p.rockImg, 1, p.x, p.y, w, h, p.rockAngle, 1, flattenY);
+    return;
+  }
+
+  if (p.state === 'settled') {
+    // Perfectly flat, face up, no tilt
+    const flattenY = 0.82;
+    drawSinglePiece(p.rockImg, 1, p.x, p.y, w, h, 0, 1, flattenY);
+    return;
+  }
+
+  // ── FLYING ──
   const tLen = p.trail.length;
   for (let i = 0; i < tLen; i++) {
     const t    = p.trail[i];
@@ -537,18 +443,17 @@ function drawPiece(p) {
       const blurAlpha = frac * 0.10 * (1 - b * 0.18);
       if (blurAlpha <= 0) continue;
       const blurAY = t.aY + b * 0.12;
-      const img    = getImg(p, blurAY);
+      const img    = getFlyImg(p, blurAY);
       const flipX  = Math.abs(Math.cos(blurAY));
       const flipY  = 0.25 + 0.75 * Math.abs(Math.cos(t.aX));
       drawSinglePiece(img, blurAlpha, t.x, t.y, tw, th, t.aZ + (b - 1.5) * 0.06, flipX, flipY);
     }
   }
 
-  // Main airborne piece
   const mainAlpha = p.age < 6 ? 0.55 : 0.82;
   const flipX = Math.abs(Math.cos(p.angleY));
   const flipY = 0.3 + 0.7 * Math.abs(Math.cos(p.angleX));
-  const img   = getImg(p, p.angleY);
+  const img   = getFlyImg(p, p.angleY);
   drawSinglePiece(img, mainAlpha, p.x, p.y, w, h, p.angleZ, flipX, flipY);
 }
 
@@ -576,33 +481,33 @@ function doThrow(power) {
   const spin   = 0.20 + power * 0.12;
 
   pieces = [
-    makePiece(
-      cx - 32 + (Math.random() - .5) * 10, H + 16,
-      vxBase - (0.8 + Math.random() * 1.2),
-      vy0 * (.96 + Math.random() * .08),
-      vz0 * (0.9 + Math.random() * .2),
-      (Math.random() - .5) * spin * 1.1,
-      spin * (Math.random() > .5 ? 1 : -1),
-      (Math.random() - .5) * 0.12,
-      result, 0
-    ),
-    makePiece(
-      cx + 32 + (Math.random() - .5) * 10, H + 16,
-      vxBase + (0.8 + Math.random() * 1.2),
-      vy0 * (.96 + Math.random() * .08),
-      vz0 * (0.9 + Math.random() * .2),
-      (Math.random() - .5) * spin * 1.1,
-      spin * (Math.random() > .5 ? 1 : -1),
-      (Math.random() - .5) * 0.12,
-      result, 1
-    ),
+    makePiece(cx - 32 + (Math.random()-.5)*10, H+16,
+      vxBase - (0.8 + Math.random()*1.2), vy0*(.96+Math.random()*.08), vz0*(0.9+Math.random()*.2),
+      (Math.random()-.5)*spin*1.1, spin*(Math.random()>.5?1:-1), (Math.random()-.5)*0.12,
+      result, 0),
+    makePiece(cx + 32 + (Math.random()-.5)*10, H+16,
+      vxBase + (0.8 + Math.random()*1.2), vy0*(.96+Math.random()*.08), vz0*(0.9+Math.random()*.2),
+      (Math.random()-.5)*spin*1.1, spin*(Math.random()>.5?1:-1), (Math.random()-.5)*0.12,
+      result, 1),
   ];
 
+  let allSettledReported = false;
+
   function loop() {
-    const done = stepPieces();
+    const allDone = stepPieces();
     render();
-    if (done) { throwing = false; onResult(result); }
-    else rafId = requestAnimationFrame(loop);
+
+    // Check if all pieces have at least landed (rocking or settled) — show result early
+    const allLanded = pieces.every(p => p.state !== 'flying');
+    if (allLanded && !allSettledReported) {
+      allSettledReported = true;
+      throwing = false;
+      onResult(result);
+    }
+
+    if (!allDone) {
+      rafId = requestAnimationFrame(loop);
+    }
   }
   rafId = requestAnimationFrame(loop);
 }
@@ -625,10 +530,10 @@ function onResult(result) {
   showResult(result);
   if (result === 'saint') {
     saintCount++; updateUI();
-    if (saintCount >= NEED) { setTimeout(goSuccess, 1100); return; }
+    if (saintCount >= NEED) { setTimeout(goSuccess, 1800); return; }
     miniBub.textContent = [MINI.s1, MINI.s2][saintCount - 1] || 'Keep going!';
   } else if (result === 'yin') {
-    miniBub.textContent = MINI.yin; setTimeout(goFail, 1500);
+    miniBub.textContent = MINI.yin; setTimeout(goFail, 2200);
   } else {
     miniBub.textContent = MINI.laugh;
   }
@@ -653,8 +558,7 @@ function resetGame() {
   pressing = false; throwing = false;
   meter.classList.remove('vis');
   holdBtn.innerHTML = 'HOLD<br>to throw';
-  showS('s-game');
-  resize();
+  showS('s-game'); resize();
 }
 
 document.getElementById('bStart').addEventListener('click', resetGame);
