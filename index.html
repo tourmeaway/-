@@ -85,7 +85,7 @@
     .laugh-info { display: flex; flex-direction: column; gap: 5px; }
     .guide-footer { font-size: 12px; color: #bbb; letter-spacing: .5px; margin-bottom: 24px; text-align: center; }
 
-    .yl { width: 300px; object-fit: contain; margin: 16px 0 12px; }
+    .yl { width: 130px; height: 130px; object-fit: contain; margin: 16px 0 12px; }
     .bub {
       width: 100%; background: #fff; border: 1px solid rgba(200,37,42,.2);
       border-radius: 14px; padding: 14px 16px; position: relative; margin-bottom: 8px;
@@ -168,6 +168,35 @@
     /* dot pop animation */
     @keyframes dotPop { 0% { transform:scale(0); opacity:0; } 60% { transform:scale(1.35); } 100% { transform:scale(1.15); opacity:1; } }
     .dot.popping { animation: dotPop .4s cubic-bezier(.34,1.56,.64,1) both; }
+
+    /* ── TOUR CTA ── */
+    .tour-cta {
+      width: 100%; max-width: 300px;
+      background: #fff8f0; border: 1.5px solid rgba(200,37,42,.25);
+      border-radius: 14px; padding: 16px 18px; margin-bottom: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      text-align: center;
+    }
+    .tour-cta-t { font-size: 13px; color: #c8252a; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: .8; }
+    .tour-cta-m { font-size: 14px; color: #555; line-height: 1.7; }
+    .tour-link {
+      font-size: 14px; font-weight: 700; color: #c8252a;
+      text-decoration: none; border-bottom: 1.5px solid rgba(200,37,42,.3);
+      padding-bottom: 1px; letter-spacing: .3px;
+    }
+    .tour-link:hover { border-bottom-color: #c8252a; }
+
+    /* ── FOOTER ── */
+    .app-footer {
+      width: 100%; max-width: 430px;
+      background: #1a0505; color: #f5c842;
+      padding: 12px 20px; display: flex; align-items: center; justify-content: center;
+      gap: 10px; flex-shrink: 0;
+    }
+    .footer-brand { font-size: 13px; font-weight: 700; letter-spacing: 1px; font-family: 'Noto Serif TC', serif; }
+    .footer-sep { opacity: .4; font-size: 13px; }
+    .footer-link { font-size: 12px; color: rgba(245,200,66,.7); text-decoration: none; letter-spacing: .3px; }
+    .footer-link:hover { color: #f5c842; }
   </style>
 </head>
 <body>
@@ -247,7 +276,7 @@
       <div class="meter-wrap" id="meter">
         <div class="meter-pct" id="mPct">0%</div>
         <div class="meter-track"><div class="meter-fill" id="mFill" style="height:0%"></div></div>
-        <div class="meter-lbl">Power</div>
+        <div class="meter-lbl">力</div>
       </div>
     </div>
     <div class="throw-btn-row">
@@ -282,8 +311,19 @@
       <circle cx="232" cy="22" r="4" fill="#c8252a" opacity="0"><animate attributeName="opacity" from="0" to="1" dur=".1s" fill="freeze" begin="1.5s"/></circle>
     </svg>
     <div class="succ-m" id="succMsg"></div>
+    <div class="tour-cta">
+      <div class="tour-cta-t">Visiting Taipei?</div>
+      <div class="tour-cta-m">Come join our tour and have the full experience at Yue Lao Temple in person.</div>
+      <a class="tour-link" href="https://www.TourMeAway.com" target="_blank">www.TourMeAway.com</a>
+    </div>
     <button class="btn on" id="bAgain">Ask again</button>
   </div>
+</div>
+
+<div class="app-footer">
+  <span class="footer-brand">TourMeAway</span>
+  <span class="footer-sep">·</span>
+  <a class="footer-link" href="https://www.TourMeAway.com" target="_blank">www.TourMeAway.com</a>
 </div>
 
 <script>
